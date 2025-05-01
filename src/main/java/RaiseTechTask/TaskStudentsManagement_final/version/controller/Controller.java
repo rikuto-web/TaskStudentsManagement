@@ -1,7 +1,7 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.controller;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.entity.Courses;
-import RaiseTechTask.TaskStudentsManagement_final.version.entity.Students;
+import RaiseTechTask.TaskStudentsManagement_final.version.entity.Course;
+import RaiseTechTask.TaskStudentsManagement_final.version.entity.Student;
 import RaiseTechTask.TaskStudentsManagement_final.version.service.ManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,25 +14,22 @@ import java.util.List;
 public class Controller {
 
     //コンストラクタインジェクション
-    private ManagementService students;
+    private ManagementService student;
+    private ManagementService course;
 
     @Autowired
-    public Controller(ManagementService students) {
-        this.students = students;
+    public Controller(ManagementService students, ManagementService course) {
+        this.student = students;
+        this.course = course;
     }
 
-    //フィールドインジェクション
-    @Autowired
-    private ManagementService coursesList;
-
-
     @GetMapping("/studentsList")
-    public List<Students> getStudents() {
-        return students.getStudentList();
+    public List<Student> getStudent() {
+        return student.getStudentList();
     }
 
     @GetMapping("/coursesList")
-    public List<Courses> getCoursesList() {
-        return coursesList.getCoursesList();
+    public List<Course> getCoursesList() {
+        return course.getCoursesList();
     }
 }
