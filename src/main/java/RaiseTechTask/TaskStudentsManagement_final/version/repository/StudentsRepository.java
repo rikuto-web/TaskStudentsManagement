@@ -1,7 +1,7 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.repository;
 
 
-import RaiseTechTask.TaskStudentsManagement_final.version.entity.Student;
+import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

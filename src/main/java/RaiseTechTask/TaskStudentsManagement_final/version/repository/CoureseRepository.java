@@ -1,12 +1,22 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.repository;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.entity.Course;
+import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface CoureseRepository {
+
+    /**
+     * 全件検索します
+     * @return全件検索した情報
+     */
+    /**
+     * リターンあるとメソッドにも反映される
+     * voidは戻り値がないためなし
+     */
+
 
     //全件取得
     @Select("SELECT * FROM students_courses")
