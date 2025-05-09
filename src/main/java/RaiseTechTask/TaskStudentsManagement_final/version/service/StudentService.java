@@ -34,6 +34,18 @@ public class StudentService {
         return cr.slectAllCourse();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     public List<Student> searchStudent() {
         sr.slectAllStudent();
         List<Student> searchByAge = new ArrayList<>();
