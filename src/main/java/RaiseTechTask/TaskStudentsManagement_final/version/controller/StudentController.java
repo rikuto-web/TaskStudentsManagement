@@ -37,6 +37,7 @@ public class StudentController {
 
         model.addAttribute("studentList", converter.convertStudentDetails(students, courses));
         return "studentList";
+        //HTMLファイルの名前でいいのか？
     }
 
     //コース情報一覧

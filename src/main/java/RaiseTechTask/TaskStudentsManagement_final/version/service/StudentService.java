@@ -24,7 +24,7 @@ public class StudentService {
 
     //全件表示・生徒情報
     public List<Student> searchStudentList() {
-        return sr.selectAllStudent();
+        return sr.slectAllStudent();
     }
 
     //全件表示・コース情報
@@ -66,6 +66,5 @@ public class StudentService {
             }
         }
         return searchByName;
-
     }
 }
