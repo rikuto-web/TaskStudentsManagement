@@ -2,6 +2,7 @@ package RaiseTechTask.TaskStudentsManagement_final.version.controller;
 
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
+import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
 import RaiseTechTask.TaskStudentsManagement_final.version.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,34 +17,25 @@ public class StudentController {
     //コンストラクタインジェクション
     private StudentService student;
     private StudentService course;
+    private StudentConverter converter;
 
     @Autowired
-    public StudentController(StudentService students, StudentService course) {
+    public StudentController(StudentService students, StudentService course, StudentConverter converter) {
         this.student = students;
         this.course = course;
-    }
-/*
-    @GetMapping("/studentsList")
-    public List<Student> getStudent() {
-        //リクエストの加工処理や入力チェックなどを記述していく
-        return student.searchStudentList();
+        this.converter = converter;
     }
 
-    @GetMapping("/coursesList")
-    public List<Course> getCoursesList() {
-        return course.searchCoursesList();
-    }
-*/
-
     @GetMapping("/studentsList")
-    public List<Student> getStudent() {
-        //リクエストの加工処理や入力チェックなどを記述していく
-        return student.searchStudent();
+    public List<StudentDetail> getStudent() {
+        List<Student> students = student.searchStudentList();
+        List<Course> courses = course.searchCoursesList();
+
+        return converter.convertStudentDetails(students, courses);
     }
 
     @GetMapping("/coursesList")
     public List<Course> getCoursesList() {
         return course.searchCourses();
     }
-
 }

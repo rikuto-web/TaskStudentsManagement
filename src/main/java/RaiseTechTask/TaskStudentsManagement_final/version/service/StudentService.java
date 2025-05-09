@@ -24,16 +24,16 @@ public class StudentService {
         this.cr = cr;
     }
 
-    /*    //全件表示・生徒情報
-        public List<Student> searchStudentList() {
-            return sr.slectAllStudent();
-        }
+    //全件表示・生徒情報
+    public List<Student> searchStudentList() {
+        return sr.slectAllStudent();
+    }
 
-        //全件表示・コース情報
-        public List<Course> searchCoursesList() {
-            return cr.slectAllCourse();
-        }
-    */
+    //全件表示・コース情報
+    public List<Course> searchCoursesList() {
+        return cr.slectAllCourse();
+    }
+
     public List<Student> searchStudent() {
         sr.slectAllStudent();
         List<Student> searchByAge = new ArrayList<>();
