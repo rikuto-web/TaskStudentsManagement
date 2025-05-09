@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 public class StudentService {
 
@@ -34,18 +33,6 @@ public class StudentService {
         return cr.slectAllCourse();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public List<Student> searchStudent() {
         sr.slectAllStudent();
         List<Student> searchByAge = new ArrayList<>();
@@ -68,6 +55,5 @@ public class StudentService {
             }
         }
         return searchByName;
-
     }
 }
