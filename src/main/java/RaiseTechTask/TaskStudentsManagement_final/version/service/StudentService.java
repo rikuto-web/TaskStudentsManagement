@@ -24,7 +24,7 @@ public class StudentService {
 
     //全件表示・生徒情報
     public List<Student> searchStudentList() {
-        return sr.slectAllStudent();
+        return sr.selectAllStudent();
     }
 
     //全件表示・コース情報
