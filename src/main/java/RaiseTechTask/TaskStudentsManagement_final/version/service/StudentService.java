@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 public class StudentService {
-
     //コンストラクタインジェクション
     private StudentsRepository sr;
     private CoureseRepository cr;
@@ -26,7 +24,7 @@ public class StudentService {
 
     //全件表示・生徒情報
     public List<Student> searchStudentList() {
-        return sr.slectAllStudent();
+        return sr.selectAllStudent();
     }
 
     //全件表示・コース情報
@@ -34,22 +32,22 @@ public class StudentService {
         return cr.slectAllCourse();
     }
 
+    //生徒情報の登録
+    public void postStudent(Student student) {
+        sr.addStudent(student);
+    }
+
+    //コース情報の登録
+    public void postCourse(Course course) {
+        cr.addStudentCourses(course);
+    }
 
 
-
-
-
-
-
-
-
-
-
-
+    //３０代の年齢絞り込み機能
     public List<Student> searchStudent() {
-        sr.slectAllStudent();
+        sr.selectAllStudent();
         List<Student> searchByAge = new ArrayList<>();
-        for (Student ageList : sr.slectAllStudent()) {
+        for (Student ageList : sr.selectAllStudent()) {
             int age = ageList.getAge();
             if (age >= 30 && age < 40) {
                 searchByAge.add(ageList);
