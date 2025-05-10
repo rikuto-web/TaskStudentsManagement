@@ -10,11 +10,11 @@ import java.util.List;
 public interface StudentsRepository {
     //全件取得
     @Select("SELECT * FROM students")
-    List<Student> slectAllStudent();
+    List<Student> selectAllStudent();
 
     //生徒の追加
-    @Insert("INSERT INTO students (id, full_name, nickname, email_address, address, age, gender)" +
-            "VALUES(#{id}, #{full_name}, #{nickname}, #{email_address}, #{address}, #{age}, #{gender})")
+    @Insert("INSERT INTO students (full_name, furigana, nickname, email_address, address, age, gender, remark)" +
+            "VALUES(#{fullName}, #{furigana}, #{nickname}, #{emailAddress}, #{address}, #{age}, #{gender}, #{remark})")
     void addStudent(Student student);
 
     //生徒の更新

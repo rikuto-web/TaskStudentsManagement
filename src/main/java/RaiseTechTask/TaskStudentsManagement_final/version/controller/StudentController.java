@@ -5,37 +5,83 @@ import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
 import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
 import RaiseTechTask.TaskStudentsManagement_final.version.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
-@RestController
+@Controller
 public class StudentController {
 
     //コンストラクタインジェクション
-    private StudentService student;
-    private StudentService course;
+    private StudentService service;
     private StudentConverter converter;
 
     @Autowired
-    public StudentController(StudentService students, StudentService course, StudentConverter converter) {
-        this.student = students;
-        this.course = course;
+    public StudentController(StudentService service, StudentConverter converter) {
+        this.service = service;
         this.converter = converter;
     }
 
-    @GetMapping("/studentsList")
-    public List<StudentDetail> getStudent() {
-        List<Student> students = student.searchStudentList();
-        List<Course> courses = course.searchCoursesList();
+    //生徒情報一覧
+    @GetMapping("/studentList")
+    public String getStudentList(Model model) {
+        List<Student> students = service.searchStudentList();
+        List<Course> courses = service.searchCoursesList();
 
-        return converter.convertStudentDetails(students, courses);
+        model.addAttribute("studentList", converter.convertStudentDetails(students, courses));
+        return "studentList";
     }
 
+    //コース情報一覧
     @GetMapping("/coursesList")
-    public List<Course> getCoursesList() {
-        return course.searchCourses();
+    public String getCoursesList(Model model2) {
+        List<Course> courses = service.searchCoursesList();
+        model2.addAttribute("courseList", courses);
+        return "courseList";
+    }
+
+    //新規生徒情報登録画面
+    @GetMapping("/newStudent")
+    public String newStudent(Model model) {
+        model.addAttribute("studentDetail", new StudentDetail());
+        return "registerStudent";
+    }
+
+    @PostMapping("/registerStudent")
+    public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+        if (result.hasErrors()) {
+            return "registerStudent";
+        }
+        service.postStudent(studentDetail.getStudent());
+        return "redirect:/studentList";
+    }
+
+    //新規コース情報登録
+    @GetMapping("/newCourse")
+    public String newCourse(Model model) {
+        List<Student> students = service.searchStudentList();
+        model.addAttribute("students", students);
+        model.addAttribute("course", new Course());
+        return "registerCourse";
+    }
+
+    @PostMapping("/registerCourse")
+    public String registerCourse(@ModelAttribute Course course, BindingResult result) {
+        if (result.hasErrors()) {
+            return "registerCourse";
+        }
+        //終了予定日を自動入力してDBへ保存（４か月指定）
+        LocalDate start = course.getCourseStartDay();
+        course.setCourseCompletionDay(start.plusMonths(4));
+
+        service.postCourse(course);
+        return "redirect:/coursesList";
     }
 }

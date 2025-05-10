@@ -23,12 +23,12 @@ public interface CoureseRepository {
     List<Course> slectAllCourse();
 
     //コースの追加
-    @Insert("INSERT INTO students_courses (id, course_name, course_start_day, course_completion_day)" +
-            "VALUES(#{id}, #{course_name}, #{course_start_day}, #{course_completion_day}")
+    @Insert("INSERT INTO students_courses (student_id, course_name, course_start_day, course_completion_day)" +
+            "VALUES(#{studentId}, #{courseName}, #{courseStartDay}, #{courseCompletionDay})")
     void addStudentCourses(Course studentCourses);
 
     //コースの更新
-    @Update("UPDATE students_courses SET course_name= #{course_name}, course_start_day= #{course_start_day}, course_completion_day= #{course_completion_day}," +
+    @Update("UPDATE students_courses SET course_name= #{course_name}, course_start_day= #{course_start_day}, course_completion_day= #{course_completion_day}" +
             "WHERE id = #{id}")
     void updateStudentCourses(Course studentCourses);
 
