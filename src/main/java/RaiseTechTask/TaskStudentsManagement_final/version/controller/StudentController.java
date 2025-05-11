@@ -42,9 +42,9 @@ public class StudentController {
 
     //コース情報一覧
     @GetMapping("/coursesList")
-    public String getCoursesList(Model model2) {
+    public String getCoursesList(Model model) {
         List<Course> courses = service.searchCoursesList();
-        model2.addAttribute("courseList", courses);
+        model.addAttribute("courseList", courses);
         return "courseList";
     }
 
