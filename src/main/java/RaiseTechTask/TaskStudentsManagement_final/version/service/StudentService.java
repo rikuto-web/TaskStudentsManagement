@@ -12,31 +12,42 @@ import java.util.List;
 
 @Service
 public class StudentService {
-
     //コンストラクタインジェクション
-    private StudentsRepository sr;
-    private CoureseRepository cr;
+    private StudentsRepository studentsRepository;
+    private CoureseRepository courseRepository;
 
     @Autowired
     public StudentService(StudentsRepository sr, CoureseRepository cr) {
-        this.sr = sr;
-        this.cr = cr;
+        this.studentsRepository = sr;
+        this.courseRepository = cr;
     }
 
     //全件表示・生徒情報
     public List<Student> searchStudentList() {
-        return sr.slectAllStudent();
+        return studentsRepository.selectAllStudent();
     }
 
     //全件表示・コース情報
     public List<Course> searchCoursesList() {
-        return cr.slectAllCourse();
+        return courseRepository.slectAllCourse();
     }
 
+    //生徒情報の登録
+    public void postStudent(Student student) {
+        studentsRepository.addStudent(student);
+    }
+
+    //コース情報の登録
+    public void postCourse(Course course) {
+        courseRepository.addStudentCourses(course);
+    }
+
+
+    //３０代の年齢絞り込み機能
     public List<Student> searchStudent() {
-        sr.slectAllStudent();
+        studentsRepository.selectAllStudent();
         List<Student> searchByAge = new ArrayList<>();
-        for (Student ageList : sr.slectAllStudent()) {
+        for (Student ageList : studentsRepository.selectAllStudent()) {
             int age = ageList.getAge();
             if (age >= 30 && age < 40) {
                 searchByAge.add(ageList);
@@ -46,9 +57,9 @@ public class StudentService {
     }
 
     public List<Course> searchCourses() {
-        cr.slectAllCourse();
+        courseRepository.slectAllCourse();
         List<Course> searchByName = new ArrayList<>();
-        for (Course name : cr.slectAllCourse()) {
+        for (Course name : courseRepository.slectAllCourse()) {
             String searchJava = name.getCourseName();
             if (searchJava.equals("Java")) {
                 searchByName.add(name);
