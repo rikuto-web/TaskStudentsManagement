@@ -22,14 +22,22 @@ public interface CoureseRepository {
     @Select("SELECT * FROM students_courses")
     List<Course> slectAllCourse();
 
+    //
+    @Select("SELECT * FROM students_courses WHERE id = #{student_id}")
+    List<Course> selectStudentCoursesById(Integer studentId);
+
     //コースの追加
     @Insert("INSERT INTO students_courses (student_id, course_name, course_start_day, course_completion_day)" +
             "VALUES(#{studentId}, #{courseName}, #{courseStartDay}, #{courseCompletionDay})")
-    void addStudentCourses(Course studentCourses);
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void addStudentCourses(Course studentsCourse);
 
     //コースの更新
-    @Update("UPDATE students_courses SET course_name= #{course_name}, course_start_day= #{course_start_day}, course_completion_day= #{course_completion_day}" +
-            "WHERE id = #{id}")
+    @Update("UPDATE students_courses SET " +
+            "course_name= #{courseName}, " +
+            "course_start_day= #{courseStartDay}, " +
+            "course_completion_day= #{courseCompletionDay}" +
+            "WHERE student_id = #{studentId}")
     void updateStudentCourses(Course studentCourses);
 
     //コースの削除
