@@ -10,9 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -34,24 +35,16 @@ public class StudentController {
     public String getStudentList(Model model) {
         List<Student> students = service.searchStudentList();
         List<Course> courses = service.searchCoursesList();
-
         model.addAttribute("studentList", converter.convertStudentDetails(students, courses));
         return "studentList";
-        //HTMLファイルの名前でいいのか？
     }
 
-    //コース情報一覧
-    @GetMapping("/coursesList")
-    public String getCoursesList(Model model) {
-        List<Course> courses = service.searchCoursesList();
-        model.addAttribute("courseList", courses);
-        return "courseList";
-    }
-
-    //新規生徒情報登録画面
+    //新規生徒情報登録
     @GetMapping("/newStudent")
     public String newStudent(Model model) {
-        model.addAttribute("studentDetail", new StudentDetail());
+        StudentDetail studentDetail = new StudentDetail();
+        studentDetail.setStudentsCourses(Arrays.asList(new Course()));
+        model.addAttribute("studentDetail", studentDetail);
         return "registerStudent";
     }
 
@@ -60,29 +53,24 @@ public class StudentController {
         if (result.hasErrors()) {
             return "registerStudent";
         }
-        service.postStudent(studentDetail.getStudent());
+        service.postStudent(studentDetail);
         return "redirect:/studentList";
     }
 
-    //新規コース情報登録
-    @GetMapping("/newCourse")
-    public String newCourse(Model model) {
-        List<Student> students = service.searchStudentList();
-        model.addAttribute("students", students);
-        model.addAttribute("course", new Course());
-        return "registerCourse";
+    @GetMapping("/Student/{id}")
+    public String getStudent(@PathVariable Integer id, Model model) {
+        StudentDetail studentDetail = service.serchStudent(id);
+        model.addAttribute("studentDetail", studentDetail);
+        return "studentUpdate";
     }
 
-    @PostMapping("/registerCourse")
-    public String registerCourse(@ModelAttribute Course course, BindingResult result) {
+    @PostMapping("/updateStudent")
+    public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
         if (result.hasErrors()) {
-            return "registerCourse";
+            return "updateStudent";
         }
-        //終了予定日を自動入力してDBへ保存（４か月指定）
-        LocalDate start = course.getCourseStartDay();
-        course.setCourseCompletionDay(start.plusMonths(4));
-
-        service.postCourse(course);
-        return "redirect:/coursesList";
+        service.updateStudent(studentDetail);
+        return "redirect:/studentList";
     }
+
 }
