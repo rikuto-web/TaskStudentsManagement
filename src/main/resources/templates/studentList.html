@@ -24,7 +24,11 @@
     <tbody>
     <tr th:each="studentDetail : ${studentList}">
         <td th:text="${studentDetail.student.id}">1</td>
-        <td th:text="${studentDetail.student.fullName}">山田太郎</td>
+        <td>
+            <a th:href="@{/updateStudent/{studentId}(studentId=${studentDetail.student.id})}">
+                <span th:text="${studentDetail.student.fullName}">山田太郎</span>
+            </a>
+        </td>
         <td th:text="${studentDetail.student.furigana}">ヤマダタロウ</td>
         <td th:text="${studentDetail.student.nickname}">タロー</td>
         <td th:text="${studentDetail.student.emailAddress}">taro@example.com</td>
@@ -32,6 +36,8 @@
         <td th:text="${studentDetail.student.age}">20</td>
         <td th:text="${studentDetail.student.gender}">男性</td>
         <td th:text="${studentDetail.student.remark}">特記なし</td>
+        <!--<a>タグ追加　hrefでリンク先（更新画面）　th:textは受け取った名前になるはず？-->
+
     </tr>
     </tbody>
 </table>
