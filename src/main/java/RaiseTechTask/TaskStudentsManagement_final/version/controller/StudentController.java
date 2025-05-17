@@ -65,7 +65,7 @@ public class StudentController {
     }
 
     //生徒情報更新
-    @GetMapping("/upDateStudent/{studentId}")
+    @GetMapping("/updateStudent/{studentId}")
     public String upDateStudent(@PathVariable Integer studentId, Model model) {
         StudentDetail studentDetail = service.pickupStudent(studentId);
         studentDetail.setStudentsCourses(Arrays.asList(new Course()));
