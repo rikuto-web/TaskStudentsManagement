@@ -48,15 +48,21 @@
     </div>
     <!--コース情報の登録部分-->
     <div th:each="course, stat : *{studentsCourses}">
-        <label th:for="studentsCourses.__${stat.index}__.id">受講コース名ID：</label>
-        <input type="number" th:id="studentCourse.__${stat.index}__.id"
+        <label th:for="studentsCourses.__${stat.index}__.id">コースID：</label>
+        <input type="hidden" th:id="studentsCourses.__${stat.index}__.id"
                th:field="*{studentsCourses[__${stat.index}__].id}"/>
+        <input type="hidden" th:field="*{studentsCourses[__${stat.index}__].studentId}"/>
+
         <label th:for="studentsCourses.__${stat.index}__.courseName">受講コース名：</label>
-        <input type="text" th:id="studentCourse.__${stat.index}__.courseName"
+        <input type="text" th:id="studentsCourses.__${stat.index}__.courseName"
                th:field="*{studentsCourses[__${stat.index}__].courseName}"/>
     </div>
     <div>
         <button type="submit">更新</button>
+    </div>
+    <div>
+        <label for="deleted">削除する</label>
+        <input type="checkbox" id="deleted" th:field="*{student.deleted}" />
     </div>
 </form>
 </body>

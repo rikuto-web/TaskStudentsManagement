@@ -9,9 +9,10 @@ import java.util.List;
 public interface CoureseRepository {
 
     //全件取得
-    @Select("SELECT * FROM students_courses")
+    @Select("SELECT * FROM students_courses ")
     List<Course> slectAllCourse();
 
+    //生徒IDに紐づいたコース情報取得
     @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
     List<Course> searchStudentCourse(Integer studentId);
 
@@ -24,7 +25,7 @@ public interface CoureseRepository {
     //コースの更新
     @Update("UPDATE students_courses SET " +
             "course_name = #{courseName} " +
-            "WHERE student_id = #{studentId}")
+            "WHERE id = #{id}")
     void updateStudentCourses(Course studentCourses);
 
     //コースの削除

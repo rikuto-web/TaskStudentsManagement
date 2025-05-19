@@ -5,6 +5,8 @@ import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
 import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
 import RaiseTechTask.TaskStudentsManagement_final.version.repository.CoureseRepository;
 import RaiseTechTask.TaskStudentsManagement_final.version.repository.StudentsRepository;
+import lombok.SneakyThrows;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ public class StudentService {
 
     //全件表示・生徒
     public List<Student> searchStudentList() {
-        return studentRepository.search();
+            return studentRepository.search();
     }
 
     //全件表示・コース
@@ -45,16 +47,16 @@ public class StudentService {
             coursesRepository.addStudentCourses(studentCourse);
         }
     }
-
+    //更新/生徒IDに紐づく情報の取得
     public StudentDetail serchStudent(Integer id) {
-        Student student = studentRepository.searchStudent(id);
-        List<Course> course = coursesRepository.searchStudentCourse(student.getId());
-        StudentDetail studentDetail = new StudentDetail();
-        studentDetail.setStudent(student);
-        studentDetail.setStudentsCourses(course);
-        return studentDetail;
+            Student student = studentRepository.searchStudent(id);
+            List<Course> course = coursesRepository.searchStudentCourse(student.getId());
+            StudentDetail studentDetail = new StudentDetail();
+            studentDetail.setStudent(student);
+            studentDetail.setStudentsCourses(course);
+            return studentDetail;
     }
-
+    //DBへ更新の実行
     @Transactional
     public void updateStudent(StudentDetail studentDetail) {
         studentRepository.updateStudent(studentDetail.getStudent());
@@ -62,5 +64,4 @@ public class StudentService {
             coursesRepository.updateStudentCourses(studentCourse);
         }
     }
-
 }

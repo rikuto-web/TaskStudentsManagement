@@ -57,6 +57,7 @@ public class StudentController {
         return "redirect:/studentList";
     }
 
+    //更新
     @GetMapping("/Student/{id}")
     public String getStudent(@PathVariable Integer id, Model model) {
         StudentDetail studentDetail = service.serchStudent(id);
@@ -67,10 +68,9 @@ public class StudentController {
     @PostMapping("/updateStudent")
     public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
         if (result.hasErrors()) {
-            return "updateStudent";
-        }
+                return "updateStudent";
+            }
         service.updateStudent(studentDetail);
         return "redirect:/studentList";
     }
-
 }
