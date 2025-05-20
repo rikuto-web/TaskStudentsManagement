@@ -30,5 +30,5 @@ public interface CoureseRepository {
 
     //コースの削除
     @Delete("DELETE FROM students_courses WHERE id = #{id}")
-    void deleteStudentCourses(Integer id);
+    void deleteStudentCourses(int id);
 }
