@@ -14,7 +14,7 @@ public interface CoureseRepository {
 
     //生徒IDに紐づいたコース情報取得
     @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
-    List<Course> searchStudentCourse(Integer studentId);
+    List<Course> searchStudentCourse(int studentId);
 
     //コースの追加
     @Insert("INSERT INTO students_courses (student_id, course_name, course_start_day, course_completion_day)" +
