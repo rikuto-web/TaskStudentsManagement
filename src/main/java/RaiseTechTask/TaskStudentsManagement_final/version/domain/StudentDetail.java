@@ -2,6 +2,7 @@ package RaiseTechTask.TaskStudentsManagement_final.version.domain;
 
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDetail {
-    private Student student;
-    private List<Course> studentCourseList;
+
+	@Valid
+	private Student student;
+
+	@Valid
+	private List<Course> studentCourseList;
 }
 
