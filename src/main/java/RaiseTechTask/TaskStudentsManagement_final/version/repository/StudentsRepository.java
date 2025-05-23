@@ -1,45 +1,42 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.repository;
 
-
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ * 受講生テーブルと紐づくrepositoryです。
+ */
 @Mapper
 public interface StudentsRepository {
-    //全件取得(論理削除）
-    @Select("SELECT * FROM students WHERE is_deleted = 0")
-    @Results({@Result(property = "deleted", column = "is_deleted")})
-    List<Student> search();
 
-    //生徒IDと一致する情報取得
-    @Select("SELECT * FROM students WHERE id = #{id}")
-    Student searchStudent(Integer id);
+    /**
+     * 受講生の全件検索を行います。
+     *
+     * @return 受講生一覧
+     */
+    List<Student> searchStudentsList();
 
-    //生徒の追加
-    @Insert("INSERT INTO students (full_name, furigana, nickname, email_address, address, age, gender, remark, is_Deleted)" +
-            "VALUES(#{fullName}, #{furigana}, #{nickname}, #{emailAddress}, #{address}, #{age}, #{gender}, #{remark}, #{deleted})")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    void addStudent(Student student);
+    /**
+     * 単独の受講生の検索を行います。
+     *
+     * @param id 　受講生ID
+     * @return 受講生
+     */
+    Student searchStudent(int id);
 
-    //生徒の更新
-    @Update("UPDATE students SET " +
-            "full_name = #{fullName}, " +
-            "furigana = #{furigana}, " +
-            "nickname = #{nickname}, " +
-            "email_address = #{emailAddress}, " +
-            "address = #{address}, " +
-            "age = #{age}, " +
-            "gender =#{gender}, " +
-            "remark =#{remark}, " +
-            "is_deleted = #{deleted} " +
-            "WHERE id = #{id}")
+    /**
+     * 受講生の登録を行います。IDに関しては自動採番を行う。
+     *
+     * @param student 個人情報
+     */
+    void registerStudent(Student student);
+
+    /**
+     * 受講生情報の更新を行います。
+     *
+     * @param student 個人情報
+     */
     void updateStudent(Student student);
-
-    //生徒の削除
-    @Delete("DELETE FROM students WHERE id = #{id}")
-    void deleteStudent(Integer id);
-
-
 }
