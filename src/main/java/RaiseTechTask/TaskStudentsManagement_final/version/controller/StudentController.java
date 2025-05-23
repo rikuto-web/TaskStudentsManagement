@@ -39,14 +39,6 @@ public class StudentController {
         return "studentList";
     }
 
-    //コース情報一覧
-    @GetMapping("/coursesList")
-    public String getCoursesList(Model model) {
-        List<Course> courses = service.searchCoursesList();
-        model.addAttribute("courseList", courses);
-        return "courseList";
-    }
-
     //新規生徒情報登録
     @GetMapping("/newStudent")
     public String newStudent(Model model) {
@@ -55,6 +47,7 @@ public class StudentController {
         model.addAttribute("studentDetail", studentDetail);
         return "registerStudent";
     }
+
     @PostMapping("/registerStudent")
     public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
         if (result.hasErrors()) {
@@ -64,19 +57,19 @@ public class StudentController {
         return "redirect:/studentList";
     }
 
-    //生徒情報更新
-    @GetMapping("/updateStudent/{studentId}")
-    public String upDateStudent(@PathVariable Integer studentId, Model model) {
-        StudentDetail studentDetail = service.pickupStudent(studentId);
-        studentDetail.setStudentsCourses(Arrays.asList(new Course()));
+    //更新
+    @GetMapping("/Student/{id}")
+    public String getStudent(@PathVariable Integer id, Model model) {
+        StudentDetail studentDetail = service.serchStudent(id);
         model.addAttribute("studentDetail", studentDetail);
-        return "studentUpDate";
+        return "studentUpdate";
     }
-    @PostMapping("/upStudent")
-    public String upStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+
+    @PostMapping("/updateStudent")
+    public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
         if (result.hasErrors()) {
-            return "studentUpDate";
-        }
+                return "updateStudent";
+            }
         service.updateStudent(studentDetail);
         return "redirect:/studentList";
     }
