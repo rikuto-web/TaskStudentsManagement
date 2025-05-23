@@ -1,13 +1,14 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.data;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class Student {
-
-    private Integer id;
+@PositiveOrZero
+    private int id;
     private String fullName;
     private String furigana;
     private String nickname;

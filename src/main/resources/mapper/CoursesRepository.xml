@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RaiseTechTask.TaskStudentsManagement_final.version.repository.CoursesRepository">
+    <!-- コース情報の全件検索-->
+    <select id="searchCourses" resultType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course">
+        SELECT *
+        FROM students_courses
+    </select>
+
+    <!-- 受講生IDに紐づいてたコース情報の検索-->
+    <select id="searchStudentCourse" resultType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course">
+        SELECT *
+        FROM students_courses
+        WHERE student_id = #{studentId}
+    </select>
+
+    <!--受講生IDに紐づいたコース情報の登録 -->
+    <insert id="registerStudentCourses" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students_courses (
+        student_id, course_name, course_start_day, course_completion_day)
+        VALUES(
+        #{studentId}, #{courseName}, #{courseStartDay}, #{courseCompletionDay})
+    </insert>
+
+    <!--受講生IDに紐づいたコース情報の更新 -->
+    <update id="updateStudentCourses" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course">
+        UPDATE students_courses SET course_name = #{courseName}
+        WHERE id = #{id}
+    </update>
+</mapper>
