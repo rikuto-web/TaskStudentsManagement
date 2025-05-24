@@ -3,6 +3,7 @@ package RaiseTechTask.TaskStudentsManagement_final.version.controller;
 import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
 import RaiseTechTask.TaskStudentsManagement_final.version.exception.TestException;
 import RaiseTechTask.TaskStudentsManagement_final.version.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -38,6 +39,7 @@ public class StudentController {
 	 *
 	 * @return 受講生一覧（全件）
 	 */
+	@Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
 	@GetMapping("/studentList")
 	public List<StudentDetail> getStudentList() {
 		return service.searchStudentList();
@@ -61,6 +63,7 @@ public class StudentController {
 	 * @param studentDetail 受講生情報とコース情報
 	 * @return 実行結果
 	 */
+	@Operation(summary = "受講生登録", description = "受講生を登録します。")
 	@PostMapping("/registerStudent")
 	public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
 		StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
