@@ -7,10 +7,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,15 +81,9 @@ public class StudentController {
 		return ResponseEntity.ok("更新処理が成功しました。");
 	}
 
-	@ExceptionHandler(TestException.class)
-	public ResponseEntity<String> handleTestException(TestException ex) {
-		//ログ出力
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-	}
-
 
 	//例外メソッドとしてとりあえず保存
-	@GetMapping("/studentList")
+	@GetMapping("/exStudentList")
 	public List<StudentDetail> ex() throws TestException {
 		throw new TestException("エラーが発生しました");
 	}
