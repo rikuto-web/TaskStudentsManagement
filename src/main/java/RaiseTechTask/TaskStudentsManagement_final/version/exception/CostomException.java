@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class CostomException {
+public class CostomException extends Exception {
 
 	@ExceptionHandler(TestException.class)
 	public ResponseEntity<String> handleTestException(TestException ex) {
