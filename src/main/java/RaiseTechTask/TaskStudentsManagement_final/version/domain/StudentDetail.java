@@ -2,15 +2,19 @@ package RaiseTechTask.TaskStudentsManagement_final.version.domain;
 
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
 import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentDetail {
     private Student student;
-    private List<Course> studentsCourses;
+    private List<Course> studentCourseList;
 }
 
