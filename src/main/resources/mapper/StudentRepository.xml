@@ -17,7 +17,8 @@
     </select>
 
     <!--受講生の登録 -->
-    <insert id="registerStudent" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Student" useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerStudent" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Student"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO students(
         full_name, furigana, nickname, email_address, address, age, gender, remark, is_Deleted)
         VALUES(

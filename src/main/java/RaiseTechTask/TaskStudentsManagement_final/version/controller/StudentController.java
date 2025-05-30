@@ -1,7 +1,10 @@
 package RaiseTechTask.TaskStudentsManagement_final.version.controller;
 
 import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
+import RaiseTechTask.TaskStudentsManagement_final.version.exception.TestException;
 import RaiseTechTask.TaskStudentsManagement_final.version.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ public class StudentController {
 	 *
 	 * @return 受講生一覧（全件）
 	 */
+	@Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
 	@GetMapping("/studentList")
 	public List<StudentDetail> getStudentList() {
 		return service.searchStudentList();
@@ -59,8 +63,9 @@ public class StudentController {
 	 * @param studentDetail 受講生情報とコース情報
 	 * @return 実行結果
 	 */
+	@Operation(summary = "受講生登録", description = "受講生を登録します。")
 	@PostMapping("/registerStudent")
-	public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
+	public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
 		StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
 		return ResponseEntity.ok(responseStudentDetail);
 	}
@@ -73,9 +78,16 @@ public class StudentController {
 	 * @return 実行結果
 	 */
 	@PutMapping("/updateStudent")
-	public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
+	public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail) {
 
 		service.updateStudent(studentDetail);
 		return ResponseEntity.ok("更新処理が成功しました。");
+	}
+
+
+	//例外メソッドとしてとりあえず保存
+	@GetMapping("/exStudentList")
+	public List<StudentDetail> ex() throws TestException {
+		throw new TestException("エラーが発生しました");
 	}
 }
