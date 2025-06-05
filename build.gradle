@@ -10,12 +10,12 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 configurations {
-    compilyOnly {
+    compileOnly {
         extendsFrom annotationProcessor
     }
 }
@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'org.junit.platform:junit-platform-launcher'
     //以下追加
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -41,4 +41,12 @@ dependencies {
 }
 tasks.named('test') {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showStandardStreams = true
+        exceptionFormat = "full" // 完全なスタックトレースを表示
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+    }
 }

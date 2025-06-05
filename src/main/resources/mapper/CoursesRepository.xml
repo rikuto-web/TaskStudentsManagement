@@ -17,7 +17,8 @@
     </select>
 
     <!--受講生IDに紐づいたコース情報の登録 -->
-    <insert id="registerStudentCourses" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course" useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerStudentCourses" parameterType="RaiseTechTask.TaskStudentsManagement_final.version.data.Course"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO students_courses (
         student_id, course_name, course_start_day, course_completion_day)
         VALUES(
