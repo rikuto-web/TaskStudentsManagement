@@ -1,8 +1,5 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.controller;
+package raisetechtask.taskstudentsmanagement.finalversion.controller;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
-import RaiseTechTask.TaskStudentsManagement_final.version.exception.TestException;
-import RaiseTechTask.TaskStudentsManagement_final.version.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -16,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
+import raisetechtask.taskstudentsmanagement.finalversion.exception.TestException;
+import raisetechtask.taskstudentsmanagement.finalversion.service.StudentService;
 
 import java.util.List;
 

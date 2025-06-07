@@ -1,13 +1,14 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.domain;
+package raisetechtask.taskstudentsmanagement.finalversion.domain;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
-import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class StudentDetail {
 
 	@Valid

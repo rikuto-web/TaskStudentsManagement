@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'war'
-    id 'org.springframework.boot' version '3.4.4'
+    id 'org.springframework.boot' version '3.3.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -10,12 +10,12 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 configurations {
-    compilyOnly {
+    compileOnly {
         extendsFrom annotationProcessor
     }
 }
@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'org.junit.platform:junit-platform-launcher'
     //以下追加
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -38,7 +38,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.4.5'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.5'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+
+    // JUnit 5 (JUnit Jupiter) を明示的に追加
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    // Mockito JUnit Jupiter を明示的に追加 (MockitoExtension のために必要)
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+
 }
 tasks.named('test') {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showStandardStreams = true
+        exceptionFormat = "full" // 完全なスタックトレースを表示
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+    }
 }

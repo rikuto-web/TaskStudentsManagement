@@ -1,4 +1,4 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.data;
+package raisetechtask.taskstudentsmanagement.finalversion.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
