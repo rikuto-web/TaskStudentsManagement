@@ -47,17 +47,57 @@ public class StudentServiceTest {
 
 	@Test
 	void 受講生詳細の一覧検索_repositoryとconverterの処理が適切に呼び出せていること() {
+		Student student1 = new Student();
+		student1.setId(999);
+		student1.setFullName("田中太郎");
+		student1.setFurigana("タナカタロウ");
+		student1.setEmailAddress("tgyhu@ghu.com");
+		student1.setAddress("東京");
+		student1.setAge(20);
+		student1.setGender("男性");
+
+		Student student2 = new Student();
+		student1.setId(888);
+		student1.setFullName("田中次郎");
+		student1.setFurigana("タナカジロウ");
+		student1.setEmailAddress("tgy@ghu.com");
+		student1.setAddress("大阪");
+		student1.setAge(55);
+		student1.setGender("男性");
+
 		List<Student> studentList = new ArrayList<>();
+		studentList.add(student1);
+		studentList.add(student2);
+
+		Course course1 = new Course();
+		course1.setStudentId(999);
+		course1.setId(111);
+		course1.setCourseName("Java");
+
+		Course course2 = new Course();
+		course1.setStudentId(888);
+		course1.setId(333);
+		course1.setCourseName("Ruby");
+
 		List<Course> courseList = new ArrayList<>();
+		courseList.add(course1);
+		courseList.add(course2);
+
+		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
+		expectedStudentDetails.add(new StudentDetail());
+		expectedStudentDetails.add(new StudentDetail());
+
 		when(repository.searchStudentsList()).thenReturn(studentList);
 		when(coursesRepository.searchCourses()).thenReturn(courseList);
-
+		when(converter.convertStudentDetails(studentList, courseList)).thenReturn(expectedStudentDetails);
+		//実行
 		List<StudentDetail> actual = sut.searchStudentList();
-
+		//検証
 		assertNotNull(actual);
 		verify(repository, times(1)).searchStudentsList();
 		verify(coursesRepository, times(1)).searchCourses();
 		verify(converter, times(1)).convertStudentDetails(studentList, courseList);
+		Assertions.assertEquals(expectedStudentDetails, actual);
 	}
 
 	@Test
