@@ -16,6 +16,7 @@ import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepo
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -53,6 +54,7 @@ public class StudentServiceTest {
 
 		List<StudentDetail> actual = sut.searchStudentList();
 
+		assertNotNull(actual);
 		verify(repository, times(1)).searchStudentsList();
 		verify(coursesRepository, times(1)).searchCourses();
 		verify(converter, times(1)).convertStudentDetails(studentList, courseList);
