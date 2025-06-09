@@ -1,4 +1,4 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.exception;
+package raisetechtask.taskstudentsmanagement.finalversion.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

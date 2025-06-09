@@ -1,7 +1,7 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.repository;
+package raisetechtask.taskstudentsmanagement.finalversion.repository;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
 import org.apache.ibatis.annotations.Mapper;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 
 import java.util.List;
 

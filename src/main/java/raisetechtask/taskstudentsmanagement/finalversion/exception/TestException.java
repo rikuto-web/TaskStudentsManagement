@@ -1,4 +1,4 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.exception;
+package raisetechtask.taskstudentsmanagement.finalversion.exception;
 
 public class TestException extends Exception {
 	public TestException() {

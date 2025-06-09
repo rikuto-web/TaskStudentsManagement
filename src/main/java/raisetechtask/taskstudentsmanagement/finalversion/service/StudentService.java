@@ -1,14 +1,14 @@
-package RaiseTechTask.TaskStudentsManagement_final.version.service;
+package raisetechtask.taskstudentsmanagement.finalversion.service;
 
-import RaiseTechTask.TaskStudentsManagement_final.version.controller.StudentConverter;
-import RaiseTechTask.TaskStudentsManagement_final.version.data.Course;
-import RaiseTechTask.TaskStudentsManagement_final.version.data.Student;
-import RaiseTechTask.TaskStudentsManagement_final.version.domain.StudentDetail;
-import RaiseTechTask.TaskStudentsManagement_final.version.repository.CoursesRepository;
-import RaiseTechTask.TaskStudentsManagement_final.version.repository.StudentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import raisetechtask.taskstudentsmanagement.finalversion.converter.StudentConverter;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
+import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
+import raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository;
+import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,7 +39,7 @@ public class StudentService {
 	 * @param studentCourse 受講生コース情報
 	 * @param student       　受講生
 	 */
-	private static void initStudentsCourse(Course studentCourse, Student student) {
+	void initStudentsCourse(Course studentCourse, Student student) {
 		LocalDate now = LocalDate.now();
 
 		studentCourse.setStudentId(student.getId());
@@ -85,7 +85,6 @@ public class StudentService {
 	@Transactional
 	public StudentDetail registerStudent(StudentDetail studentDetail) {
 		Student student = studentDetail.getStudent();
-
 		studentRepository.registerStudent(student);
 		studentDetail.getStudentCourseList().forEach(studentCourse -> {
 			initStudentsCourse(studentCourse, student);
