@@ -6,9 +6,11 @@ import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -76,5 +78,19 @@ class StudentConverterTest {
 		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, courseList);
 		//検証
 		assertEquals(expectedStudentDetails, actualStudentDetails);
+	}
+
+	@Test
+	void 受講生のリストと受講生コース情報のリストを渡したときに紐づかない受講生コース情報は除外されること() {
+		Student student = new Student(999, "田中太郎", "タナカタロウ", "たなか", "rftgyhu@huji.com", "東京", 35, "男性", "", false);
+		Course course = new Course(999, 888, "Java", LocalDate.now(), LocalDate.now().plusYears(1));
+
+		List<Student> studentList = List.of(student);
+		List<Course> courseList = List.of(course);
+
+		List<StudentDetail> actual = converter.convertStudentDetails(studentList, courseList);
+
+		assertThat(actual.get(0).getStudent()).isEqualTo(student);
+		assertThat(actual.get(0).getStudentCourseList()).isEmpty();
 	}
 }
