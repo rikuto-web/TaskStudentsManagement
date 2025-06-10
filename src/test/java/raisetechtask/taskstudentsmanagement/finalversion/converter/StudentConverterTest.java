@@ -53,7 +53,7 @@ class StudentConverterTest {
 	}
 
 	@Test
-	void 複数の受講生情報と受講生IDに紐づいた空のコース情報が返ってきていること() {
+	void 複数の受講生情報と受講生に紐づいた空のコース情報が返ってきていること() {
 		Student student = new Student(999, "田中太郎", "タナカタロウ", "たなか", "rftgyhu@huji.com", "東京", 35, "男性", "", false);
 		Student student1 = new Student(888, "田中ジロウ", "タナカジロウ", "じろう", "rgyu@huji.com", "沖縄", 40, "男性", "", false);
 		List<Student> studentList = new ArrayList<>();
