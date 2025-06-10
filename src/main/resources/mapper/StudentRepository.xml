@@ -2,22 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="repository.raisetechtask.taskstudentsmanagement.finalversion.StudentsRepository">
+<mapper namespace="raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository">
     <!-- 受講生の全件検索-->
-    <select id="searchStudentsList" resultType="data.raisetechtask.taskstudentsmanagement.finalversion.Student">
+    <select id="searchStudentsList" resultType="Student">
         SELECT *
         FROM students
     </select>
 
     <!-- 受講生の検索-->
-    <select id="searchStudent" resultType="data.raisetechtask.taskstudentsmanagement.finalversion.Student">
+    <select id="searchStudent" resultType="Student">
         SELECT *
         FROM students
         WHERE id = #{id}
     </select>
 
     <!--受講生の登録 -->
-    <insert id="registerStudent" parameterType="data.raisetechtask.taskstudentsmanagement.finalversion.Student"
+    <insert id="registerStudent" parameterType="Student"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO students(
         full_name, furigana, nickname, email_address, address, age, gender, remark, is_Deleted)
@@ -26,7 +26,7 @@
     </insert>
 
     <!--受講生の更新 -->
-    <update id="updateStudent" parameterType="data.raisetechtask.taskstudentsmanagement.finalversion.Student">
+    <update id="updateStudent" parameterType="Student">
         UPDATE students
         SET
         full_name = #{fullName},
