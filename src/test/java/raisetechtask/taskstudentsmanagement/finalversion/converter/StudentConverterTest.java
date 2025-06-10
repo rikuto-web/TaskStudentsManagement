@@ -35,58 +35,30 @@ class StudentConverterTest {
 	}
 
 	@Test
-	void 単一の受講生情報に紐づいたコース情報が空の状態() {
-		Student student = new Student();
-		student.setId(999);
-		student.setFullName("田中太郎");
-		student.setFurigana("タナカタロウ");
-		student.setNickname("たなか");
-		student.setEmailAddress("rftgyhu@huji.com");
-		student.setAddress("東京");
-		student.setAge(35);
-		student.setGender("男性");
+	void 単一の受講生情報に紐づいたコース情報が空の状態で返ってきていること() {
+		Student student = new Student(999, "田中太郎", "タナカタロウ", "たなか", "rftgyhu@huji.com", "東京", 35, "男性", "", false);
 		List<Student> studentList = new ArrayList<>();
 		studentList.add(student);
-
-		List<Course> courseList = new ArrayList<>();
-
 		StudentDetail expectedDetail = new StudentDetail();
 		expectedDetail.setStudent(student);
 		expectedDetail.setStudentCourseList(new ArrayList<>());
-
 		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
 		expectedStudentDetails.add(expectedDetail);
+
+		List<Course> courseList = new ArrayList<>();
 		//実行
 		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, courseList);
 		//検証
 		assertEquals(expectedStudentDetails, actualStudentDetails);
 	}
 
-	void 複数の受講生情報に紐づいたコース情報が空の状態() {
-		Student student = new Student();
-		student.setId(999);
-		student.setFullName("田中太郎");
-		student.setFurigana("タナカタロウ");
-		student.setNickname("たなか");
-		student.setEmailAddress("rftgyhu@huji.com");
-		student.setAddress("東京");
-		student.setAge(35);
-		student.setGender("男性");
-
-		Student student1 = new Student();
-		student1.setId(888);
-		student1.setFullName("田中ジロウ");
-		student1.setFurigana("タナカジロウ");
-		student1.setNickname("じろう");
-		student1.setEmailAddress("rgyu@huji.com");
-		student1.setAddress("沖縄");
-		student1.setAge(40);
-		student1.setGender("男性");
-
+	@Test
+	void 複数の受講生情報と受講生IDに紐づいた空のコース情報が返ってきていること() {
+		Student student = new Student(999, "田中太郎", "タナカタロウ", "たなか", "rftgyhu@huji.com", "東京", 35, "男性", "", false);
+		Student student1 = new Student(888, "田中ジロウ", "タナカジロウ", "じろう", "rgyu@huji.com", "沖縄", 40, "男性", "", false);
 		List<Student> studentList = new ArrayList<>();
 		studentList.add(student);
 		studentList.add(student1);
-
 		List<Course> courseList = new ArrayList<>();
 
 		StudentDetail expectedDetailForStudent = new StudentDetail();
@@ -95,7 +67,7 @@ class StudentConverterTest {
 
 		StudentDetail expectedDetailForStudent1 = new StudentDetail();
 		expectedDetailForStudent1.setStudent(student1);
-		expectedDetailForStudent.setStudentCourseList(new ArrayList<>());
+		expectedDetailForStudent1.setStudentCourseList(new ArrayList<>());
 
 		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
 		expectedStudentDetails.add(expectedDetailForStudent);
