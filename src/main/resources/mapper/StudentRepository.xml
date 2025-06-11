@@ -22,7 +22,7 @@
         INSERT INTO students(
         full_name, furigana, nickname, email_address, address, age, gender, remark, is_Deleted)
         VALUES(
-        #{fullName}, #{furigana}, #{nickname}, #{emailAddress}, #{address}, #{age}, #{gender}, #{remark}, #{deleted})
+        #{fullName}, #{furigana}, #{nickname}, #{emailAddress}, #{address}, #{age}, #{gender}, #{remark}, #{isDeleted})
     </insert>
 
     <!--受講生の更新 -->
@@ -37,7 +37,7 @@
         age = #{age},
         gender =#{gender},
         remark =#{remark},
-        is_deleted = #{deleted}
+        is_deleted = #{isDeleted}
         WHERE id = #{id}
     </update>
 </mapper>

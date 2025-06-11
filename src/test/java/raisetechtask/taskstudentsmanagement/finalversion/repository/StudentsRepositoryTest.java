@@ -21,25 +21,51 @@ class StudentsRepositoryTest {
 		assertThat(actual.size()).isEqualTo(5);
 	}
 
+	@Test
+	void IDに紐づいた受講生情報の検索が行えること() {
+		sut.registerStudent(createDefaultStudent());
+
+		Student actual = sut.searchStudent(createDefaultStudent().getId());
+
+		assertThat(actual.getId()).isEqualTo(createDefaultStudent().getId());
+	}
+
 
 	@Test
-	void 図構成の登録が行えること() {
-		Student student = Student.builder()
-				.fullName("田中太郎")
-				.furigana("タナカタロウ")
-				.nickname("たなか")
-				.emailAddress("rftgyhu@huji.com")
-				.address("東京")
-				.age(35)
-				.gender("男性")
-				.remark("")
-				.deleted(false)
-				.build();
-
-		sut.registerStudent(student);
+	void 受講生の登録が行えること() {
+		sut.registerStudent(createDefaultStudent());
 
 		List<Student> actual = sut.searchStudentsList();
-		assertThat(actual.size()).isEqualTo(5);
+		assertThat(actual.size()).isEqualTo(6);
+	}
 
+	@Test
+	void 受講生情報の更新が行えること() {
+		Student initialStudent = createDefaultStudent();
+		sut.registerStudent(initialStudent);
+		int studentIdToUpdate = initialStudent.getId();
+		Student demoStudent = sut.searchStudent(studentIdToUpdate);
+		demoStudent.setDeleted(true);
+
+		sut.updateStudent(demoStudent);
+		Student updatedStudent = sut.searchStudent(studentIdToUpdate);
+
+
+		assertThat(updatedStudent.isDeleted()).isTrue();
+	}
+
+	//ヘルパーメソッド
+	private Student createDefaultStudent() {
+		return Student.builder()
+				.fullName("デフォルト太郎")
+				.furigana("デフォルトタロウ")
+				.nickname("デモニック")
+				.emailAddress("default.test@example.com")
+				.address("東京都千代田区")
+				.age(25)
+				.gender("男性")
+				.remark("デフォルトデータ")
+				.isDeleted(false)
+				.build();
 	}
 }
