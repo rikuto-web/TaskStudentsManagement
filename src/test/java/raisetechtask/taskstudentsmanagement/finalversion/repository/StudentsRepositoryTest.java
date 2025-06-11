@@ -23,11 +23,12 @@ class StudentsRepositoryTest {
 
 	@Test
 	void IDに紐づいた受講生情報の検索が行えること() {
-		sut.registerStudent(createDefaultStudent());
+		Student studentToRegister = createDefaultStudent();
+		sut.registerStudent(studentToRegister);
 
-		Student actual = sut.searchStudent(createDefaultStudent().getId());
+		Student actual = sut.searchStudent(studentToRegister.getId());
 
-		assertThat(actual.getId()).isEqualTo(createDefaultStudent().getId());
+		assertThat(actual.getId()).isEqualTo(studentToRegister.getId());
 	}
 
 
