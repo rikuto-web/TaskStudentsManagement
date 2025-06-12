@@ -3,11 +3,14 @@ package raisetechtask.taskstudentsmanagement.finalversion.repository;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @MybatisTest//テスト終了時自動でロールバックする
 class StudentsRepositoryTest {
@@ -31,6 +34,14 @@ class StudentsRepositoryTest {
 		assertThat(actual.getId()).isEqualTo(studentToRegister.getId());
 	}
 
+	@Test
+	void IDに紐づいた受講生の情報が見つからない場合() {
+		int nonExistentStudentId = 9999999; // 確実に存在しないID
+		Student actual = sut.searchStudent(nonExistentStudentId);
+
+		assertNull(actual, "存在しないIDで検索した場合、nullが返るべきです");
+	}
+
 
 	@Test
 	void 受講生の登録が行えること() {
@@ -38,6 +49,16 @@ class StudentsRepositoryTest {
 
 		List<Student> actual = sut.searchStudentsList();
 		assertThat(actual.size()).isEqualTo(6);
+	}
+
+	@Test
+	void 必須項目がnullの場合に登録処理が実行できないこと() {
+		Student studentWithNullName = Student.builder()
+				.fullName(null)
+				.build();
+
+		assertThrows(DataIntegrityViolationException.class, () -> sut.registerStudent(studentWithNullName),
+				"必須項目がnull");
 	}
 
 	@Test
