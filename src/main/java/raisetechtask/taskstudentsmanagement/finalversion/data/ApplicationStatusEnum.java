@@ -17,7 +17,18 @@ public enum ApplicationStatusEnum {
 		this.displayValue = displayValue;
 	}
 
+	//定数から表示値を取得する操作
 	public String getDisplayValue() {
 		return displayValue;
+	}
+
+	//リクエストされた情報を定数に変換する操作
+	public static ApplicationStatusEnum fromDisplayValue(String displayValue) {
+		for ( ApplicationStatusEnum statusEnum : ApplicationStatusEnum.values() ) {
+			if ( statusEnum.displayValue.equals(displayValue) ) {
+				return statusEnum;
+			}
+		}
+		throw new IllegalArgumentException("存在しない定数です。" + displayValue);
 	}
 }
