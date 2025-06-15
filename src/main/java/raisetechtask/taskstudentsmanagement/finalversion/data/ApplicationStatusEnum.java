@@ -1,5 +1,6 @@
 package raisetechtask.taskstudentsmanagement.finalversion.data;
 
+
 public enum ApplicationStatusEnum {
 
 	/* enumの場合,自動的に定数(=public static final)として扱われる

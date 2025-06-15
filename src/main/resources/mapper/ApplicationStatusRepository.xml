@@ -24,12 +24,12 @@
         INSERT INTO application_status (
         student_course_id, status)
         VALUES(
-        #{studentCourseId}, #{status})
+        #{studentCourseId}, #{status, jdbcType=VARCHAR})
     </insert>
 
     <!--申し込み状況の更新 -->
-    <update id="updateStatus" parameterType="ApplicationStatus">
-        UPDATE application_status SET status = #{status}
+    <update id="updateStatus" parameterType="ApplicationStatusEnum">
+        UPDATE application_status SET status = #{status.displayValue, jdbcType=VARCHAR}
         WHERE id = #{id}
     </update>
 </mapper>
