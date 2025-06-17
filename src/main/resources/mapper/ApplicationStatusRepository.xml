@@ -28,7 +28,7 @@
     </insert>
 
     <!--申し込み状況の更新 -->
-    <update id="updateStatus" parameterType="ApplicationStatus">
+    <update id="updateStatus">
         UPDATE application_status SET status = #{status}
         WHERE student_course_id = #{studentCourseId}
     </update>
