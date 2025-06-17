@@ -2,22 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="repository.raisetechtask.taskstudentsmanagement.finalversion.CoursesRepository">
+<mapper namespace="raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository">
     <!-- コース情報の全件検索-->
-    <select id="searchCourses" resultType="data.raisetechtask.taskstudentsmanagement.finalversion.Course">
+    <select id="searchCourses" resultType="Course">
         SELECT *
         FROM students_courses
     </select>
 
     <!-- 受講生IDに紐づいてたコース情報の検索-->
-    <select id="searchStudentCourse" resultType="data.raisetechtask.taskstudentsmanagement.finalversion.Course">
+    <select id="searchStudentCourse" resultType="Course">
         SELECT *
         FROM students_courses
         WHERE student_id = #{studentId}
     </select>
 
     <!--受講生IDに紐づいたコース情報の登録 -->
-    <insert id="registerStudentCourses" parameterType="data.raisetechtask.taskstudentsmanagement.finalversion.Course"
+    <insert id="registerStudentCourses" parameterType="Course"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO students_courses (
         student_id, course_name, course_start_day, course_completion_day)
@@ -26,7 +26,7 @@
     </insert>
 
     <!--受講生IDに紐づいたコース情報の更新 -->
-    <update id="updateStudentCourses" parameterType="data.raisetechtask.taskstudentsmanagement.finalversion.Course">
+    <update id="updateStudentCourses" parameterType="Course">
         UPDATE students_courses SET course_name = #{courseName}
         WHERE id = #{id}
     </update>
