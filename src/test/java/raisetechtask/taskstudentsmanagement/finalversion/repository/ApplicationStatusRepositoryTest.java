@@ -86,18 +86,19 @@ class ApplicationStatusRepositoryTest {
 
 	@Test
 	void updateStatus_登録済み申し込み状況が更新できること() {
-		ApplicationStatus demoStatus = getApplicationStatus();
-		int registedStatus = statusSut.registerStatus(demoStatus);
-		String updateStatus = ("受講中");
-		ApplicationStatusEnum updateDemoStatus = fromDisplayValue(updateStatus);
+		ApplicationStatus demoStatus = getApplicationStatus();//ダミーデータメソッド
+		int registedStatus = statusSut.registerStatus(demoStatus);//ダミーの登録処理
+		String updateStatus = ("受講中");//更新内容（本申込→受講中）
+		ApplicationStatusEnum updateDemoStatus = fromDisplayValue(updateStatus);//Enumクラスにある変換メソッドへ
 
-		int update = statusSut.updateStatus(updateDemoStatus);
-		ApplicationStatus actual = statusSut.searchStudentCourseStatus(demoStatus.getStudentCourseId());
+		int update = statusSut.updateStatus(demoStatus.getStudentCourseId(), updateDemoStatus);//更新メソッド（コースIDとEnum(name)
+		ApplicationStatus actual = statusSut.searchStudentCourseStatus(demoStatus.getStudentCourseId());//更新後呼び出し
 
-		assertThat(update).isEqualTo(1);
-		assertThat(actual.getStatus()).isEqualTo(updateStatus);
+		assertThat(update).isEqualTo(1);//呼び出し回数
+		assertThat(actual.getStatus()).isEqualTo(updateDemoStatus);//JUKOCHU＝JUKOCHUか
 		assertThat(actual).isNotNull();
 	}
+
 
 	//ダミーの申込情報の登録処理
 	private ApplicationStatus getApplicationStatus() {
