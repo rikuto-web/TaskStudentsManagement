@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationStatusRepository">
+
+    <!--申し込み状況の全件検索 -->
+    <select id="searchStudentCourseStatusList"
+            resultType="raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus">
+        SELECT *
+        FROM application_status
+    </select>
+
+    <!--コースIDに紐づいた申し込み状況の検索 -->
+    <select id="searchStudentCourseStatus"
+            resultType="raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus">
+        SELECT *
+        FROM application_status
+        WHERE student_course_id = #{studentCourseId}
+    </select>
+
+    <!--申し込み状況の登録 -->
+    <insert id="registerStatus" parameterType="ApplicationStatus" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO application_status (
+        student_course_id, status)
+        VALUES(
+        #{studentCourseId}, #{status, jdbcType=VARCHAR})
+    </insert>
+
+    <!--申し込み状況の更新 -->
+    <update id="updateStatus">
+        UPDATE application_status SET status = #{status}
+        WHERE student_course_id = #{studentCourseId}
+    </update>
+</mapper>
