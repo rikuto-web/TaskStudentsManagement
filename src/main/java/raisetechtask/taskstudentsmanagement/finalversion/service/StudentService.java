@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetechtask.taskstudentsmanagement.finalversion.converter.StudentConverter;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
@@ -25,10 +26,10 @@ import static raisetechtask.taskstudentsmanagement.finalversion.data.Application
 @Service
 public class StudentService {
 
-	private StudentsRepository studentRepository;
-	private CoursesRepository coursesRepository;
-	private StudentConverter converter;
-	private ApplicationStatusRepository applicationStatusRepository;
+	private final StudentsRepository studentRepository;
+	private final CoursesRepository coursesRepository;
+	private final StudentConverter converter;
+	private final ApplicationStatusRepository applicationStatusRepository;
 
 	public StudentService(StudentsRepository studentRepository, CoursesRepository coursesRepository, StudentConverter converter, ApplicationStatusRepository applicationStatusRepository) {
 		this.studentRepository = studentRepository;
@@ -132,10 +133,9 @@ public class StudentService {
 		for ( Course studentCourse : studentDetail.getStudentCourseList() ) {
 			coursesRepository.updateStudentCourses(studentCourse);
 
-			ApplicationStatus updateStatu = studentDetail.getStatus();//Detailとして受け取ったStatus（Enum文字）を取得
-			ApplicationStatus searchStatus = applicationStatusRepository.searchStudentCourseStatus(studentCourse.getId());
-			searchStatus.setStatus(updateStatu.getStatus());//現状の申込状況を検索しDetailで受け取った情報をsetする
-			applicationStatusRepository.updateStatus(searchStatus);//更新の実行
+			ApplicationStatusEnum updateStatus = studentDetail.getStatus().getStatus();//studentDetailにあるstatusにあるEnum型のstatus
+			applicationStatusRepository.searchStudentCourseStatus(studentCourse.getId());//コースIDの取得
+			applicationStatusRepository.updateStatus(studentCourse.getId(), updateStatus); //コースIDとstatusをセットして更新
 		}
 	}
 }
