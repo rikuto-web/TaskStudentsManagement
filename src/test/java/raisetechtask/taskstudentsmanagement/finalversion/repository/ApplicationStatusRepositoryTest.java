@@ -11,7 +11,7 @@ import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
-import raisetechtask.taskstudentsmanagement.finalversion.demoDate;
+import raisetechtask.taskstudentsmanagement.finalversion.data.demoDate;
 
 import java.util.List;
 

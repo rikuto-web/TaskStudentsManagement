@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationStatusRepository">
 
     <!--申し込み状況の全件検索 -->
@@ -20,11 +20,12 @@
     </select>
 
     <!--申し込み状況の登録 -->
-    <insert id="registerStatus" parameterType="ApplicationStatus" useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerStatus" parameterType="raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO application_status (
         student_course_id, status)
         VALUES(
-        #{studentCourseId}, #{status, jdbcType=VARCHAR})
+        #{studentCourseId}, #{status})
     </insert>
 
     <!--申し込み状況の更新 -->

@@ -82,11 +82,11 @@ public class StudentService {
 	public StudentDetail searchStudent(int id) throws Exception {
 		Student student = studentRepository.searchStudent(id);
 		List<Course> course = coursesRepository.searchStudentCourse(student.getId());
-		Optional<Integer> courseById = course.stream()//CourseがListのため一旦Obtionalに変換
+		Optional<Integer> courseById = course.stream()//CourseがListのため一旦Optionalに変換
 				.map(Course::getId)//処理内容はコースリストからgetIdをループさせる
 				.findFirst();//最初に取得したidを使用する
 		int courseId;//intで使用するための事前準備
-		ApplicationStatus status;//AplicationStatusを使用するための事前準備
+		ApplicationStatus status;//ApplicationStatusを使用するための事前準備
 		if ( courseById.isPresent() ) {  //isPresentで最初に取得したOptionalのgetIdの有無・nullかをチェック
 			courseId = courseById.get();//存在した場合はgetメソッドでIDを取得
 			status = applicationStatusRepository.searchStudentCourseStatus(courseId);//申込状況の登録時に取得したIDを仕様
@@ -134,8 +134,9 @@ public class StudentService {
 			coursesRepository.updateStudentCourses(studentCourse);
 
 			ApplicationStatusEnum updateStatus = studentDetail.getStatus().getStatus();//studentDetailにあるstatusにあるEnum型のstatus
-			applicationStatusRepository.searchStudentCourseStatus(studentCourse.getId());//コースIDの取得
-			applicationStatusRepository.updateStatus(studentCourse.getId(), updateStatus); //コースIDとstatusをセットして更新
+			Integer courseId = studentCourse.getId();
+			ApplicationStatus existingStatus = applicationStatusRepository.searchStudentCourseStatus(courseId);
+			applicationStatusRepository.updateStatus(courseId, updateStatus); //コースIDとstatusをセットして更新
 		}
 	}
 }

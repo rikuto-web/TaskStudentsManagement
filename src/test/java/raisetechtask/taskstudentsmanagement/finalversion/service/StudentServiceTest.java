@@ -66,7 +66,6 @@ public class StudentServiceTest {
 
 		when(repository.searchStudentsList()).thenReturn(studentList);
 		when(coursesRepository.searchCourses()).thenReturn(courseList);
-		when(converter.convertStudentDetails(studentList, courseList, statusList)).thenReturn(expectedStudentDetails);
 		//実行
 		List<StudentDetail> actual = sut.searchStudentList();
 		//検証
@@ -78,7 +77,7 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void 受講生IDで受講生の詳細を検索処理() {
+	void 受講生IDで受講生の詳細を検索処理() throws Exception {
 		int testId = 0;
 		int testCpurseId = 0;
 		Student student = new Student();

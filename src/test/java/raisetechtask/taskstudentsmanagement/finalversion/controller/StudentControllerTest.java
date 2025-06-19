@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
@@ -59,11 +61,12 @@ class StudentControllerTest {
 	void 受講生詳細の登録処理の呼び出しができていること() throws Exception {
 		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> requestCourses = new ArrayList<>();
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses);
+		ApplicationStatus repuestStatus = new ApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
+		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses, repuestStatus);
 
 		Student registeredStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> registeredCourses = new ArrayList<>();
-		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(registeredStudent, registeredCourses);
+		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(registeredStudent, registeredCourses, repuestStatus);
 
 		when(service.registerStudent(any(StudentDetail.class))).thenReturn(expectedRegisteredStudentDetail);
 
@@ -80,11 +83,13 @@ class StudentControllerTest {
 	void 受講生詳細の更新の呼び出しができていること() throws Exception {
 		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> requestCourses = new ArrayList<>();
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses);
+		ApplicationStatus repuestStatus = new ApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
+
+		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses, repuestStatus);
 
 		Student updateStudent = new Student(7, "田中次郎", "タナカジロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> registeredCourses = new ArrayList<>();
-		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(updateStudent, registeredCourses);
+		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(updateStudent, registeredCourses, repuestStatus);
 
 		doNothing().when(service).updateStudent(any(StudentDetail.class));
 		mockMvc.perform(MockMvcRequestBuilders.put("/updateStudent")

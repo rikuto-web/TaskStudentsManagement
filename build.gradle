@@ -35,9 +35,8 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.4.5'
-    implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.5'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testImplementation 'com.h2database:h2:2.3.232'
 
@@ -47,6 +46,8 @@ dependencies {
 
     // Mockito JUnit Jupiter を明示的に追加 (MockitoExtension のために必要)
     testImplementation 'org.mockito:mockito-junit-jupiter'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
 }
 tasks.named('test') {
