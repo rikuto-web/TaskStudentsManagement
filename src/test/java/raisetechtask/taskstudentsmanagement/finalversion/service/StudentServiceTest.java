@@ -66,34 +66,37 @@ public class StudentServiceTest {
 
 		when(repository.searchStudentsList()).thenReturn(studentList);
 		when(coursesRepository.searchCourses()).thenReturn(courseList);
+		when(converter.convertStudentDetails(studentList, courseList, statusList)).thenReturn(expectedStudentDetails);
+		when(applicationStatusRepository.searchStudentCourseStatusList()).thenReturn(statusList);
 		//実行
 		List<StudentDetail> actual = sut.searchStudentList();
 		//検証
 		assertNotNull(actual);
 		verify(repository, times(1)).searchStudentsList();
 		verify(coursesRepository, times(1)).searchCourses();
-		verify(converter, times(1)).convertStudentDetails(studentList, courseList, statusList);
+		verify(applicationStatusRepository, times(1)).searchStudentCourseStatusList();
 		Assertions.assertEquals(expectedStudentDetails, actual);
 	}
 
 	@Test
 	void 受講生IDで受講生の詳細を検索処理() throws Exception {
-		int testId = 0;
-		int testCpurseId = 0;
-		Student student = new Student();
-		student.setId(testId);
-		List<Course> courseList = new ArrayList<>();
+		int testCpurseId = 333;
+		Student student = getStudent();
+		List<Course> courseList = getCourses();
 		ApplicationStatus status = new ApplicationStatus();
 		status.setStudentCourseId(testCpurseId);
 
-		when(repository.searchStudent(testId)).thenReturn(student);
+		when(repository.searchStudent(student.getId())).thenReturn(student);
 		when(coursesRepository.searchStudentCourse(student.getId())).thenReturn(courseList);
+		when(applicationStatusRepository.searchStudentCourseStatus(testCpurseId)).thenReturn(status);
 
-		StudentDetail actual = sut.searchStudent(testId);
+		StudentDetail actual = sut.searchStudent(student.getId());
 		StudentDetail expected = new StudentDetail(student, courseList, status);
 
-		verify(repository, times(1)).searchStudent(testId);
-		verify(coursesRepository, times(1)).searchStudentCourse(testId);
+		verify(repository, times(1)).searchStudent(student.getId());
+		verify(coursesRepository, times(1)).searchStudentCourse(student.getId());
+		verify(applicationStatusRepository, times(1))
+				.searchStudentCourseStatus(testCpurseId);
 		Assertions.assertEquals(expected, actual);
 	}
 
@@ -196,5 +199,17 @@ public class StudentServiceTest {
 		studentList.add(student1);
 		studentList.add(student2);
 		return studentList;
+	}
+
+	private static Student getStudent() {
+		Student student1 = new Student();
+		student1.setId(999);
+		student1.setFullName("田中太郎");
+		student1.setFurigana("タナカタロウ");
+		student1.setEmailAddress("tgyhu@ghu.com");
+		student1.setAddress("東京");
+		student1.setAge(20);
+		student1.setGender("男性");
+		return student1;
 	}
 }

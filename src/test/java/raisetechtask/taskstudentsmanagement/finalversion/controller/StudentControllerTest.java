@@ -1,12 +1,9 @@
 package raisetechtask.taskstudentsmanagement.finalversion.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,17 +25,15 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(StudentController.class)
-@AutoConfigureWebMvc
 class StudentControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	private ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@MockBean
 	private StudentService service;
-
-	private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Test
 	void 受講生詳細の一覧検索が実行できて空のリストが帰ってくること() throws Exception {
