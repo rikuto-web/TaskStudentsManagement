@@ -1,18 +1,17 @@
 package raisetechtask.taskstudentsmanagement.finalversion.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
@@ -26,17 +25,15 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(StudentController.class)
-@AutoConfigureWebMvc
 class StudentControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	private ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@MockBean
 	private StudentService service;
-
-	private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Test
 	void 受講生詳細の一覧検索が実行できて空のリストが帰ってくること() throws Exception {
@@ -59,11 +56,12 @@ class StudentControllerTest {
 	void 受講生詳細の登録処理の呼び出しができていること() throws Exception {
 		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> requestCourses = new ArrayList<>();
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses);
+		ApplicationStatus repuestStatus = new ApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
+		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses, repuestStatus);
 
 		Student registeredStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> registeredCourses = new ArrayList<>();
-		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(registeredStudent, registeredCourses);
+		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(registeredStudent, registeredCourses, repuestStatus);
 
 		when(service.registerStudent(any(StudentDetail.class))).thenReturn(expectedRegisteredStudentDetail);
 
@@ -80,11 +78,13 @@ class StudentControllerTest {
 	void 受講生詳細の更新の呼び出しができていること() throws Exception {
 		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> requestCourses = new ArrayList<>();
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses);
+		ApplicationStatus repuestStatus = new ApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
+
+		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, requestCourses, repuestStatus);
 
 		Student updateStudent = new Student(7, "田中次郎", "タナカジロウ", "ニックネーム", "register@example.com", "東京", 25, "男性", "備考", false);
 		List<Course> registeredCourses = new ArrayList<>();
-		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(updateStudent, registeredCourses);
+		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(updateStudent, registeredCourses, repuestStatus);
 
 		doNothing().when(service).updateStudent(any(StudentDetail.class));
 		mockMvc.perform(MockMvcRequestBuilders.put("/updateStudent")

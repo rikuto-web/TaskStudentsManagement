@@ -3,10 +3,12 @@ package raisetechtask.taskstudentsmanagement.finalversion.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Data
 public class StudentDetail {
 
 	@Valid
@@ -25,5 +28,8 @@ public class StudentDetail {
 
 	@Valid
 	private List<Course> studentCourseList;
+
+	@Valid
+	private ApplicationStatus status;
 }
 

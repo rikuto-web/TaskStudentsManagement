@@ -7,12 +7,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import raisetechtask.taskstudentsmanagement.finalversion.converter.StudentConverter;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
+import raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationStatusRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum.JUKOCHU;
+import static raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum.KARI_MOSIKOMI;
 
 @ExtendWith(MockitoExtension.class)
 public class StudentServiceTest {
@@ -36,52 +41,25 @@ public class StudentServiceTest {
 	@Mock
 	private StudentConverter converter;
 
+	@Mock
+	private ApplicationStatusRepository applicationStatusRepository;
+
 	private StudentService sut;
 
 	@BeforeEach
 	void before() {
-		sut = new StudentService(repository, coursesRepository, converter);
+		sut = new StudentService(repository, coursesRepository, converter, applicationStatusRepository);
 
 	}
 
 
 	@Test
 	void 受講生詳細の一覧検索_repositoryとconverterの処理が適切に呼び出せていること() {
-		Student student1 = new Student();
-		student1.setId(999);
-		student1.setFullName("田中太郎");
-		student1.setFurigana("タナカタロウ");
-		student1.setEmailAddress("tgyhu@ghu.com");
-		student1.setAddress("東京");
-		student1.setAge(20);
-		student1.setGender("男性");
+		List<Student> studentList = getStudents();//
 
-		Student student2 = new Student();
-		student1.setId(888);
-		student1.setFullName("田中次郎");
-		student1.setFurigana("タナカジロウ");
-		student1.setEmailAddress("tgy@ghu.com");
-		student1.setAddress("大阪");
-		student1.setAge(55);
-		student1.setGender("男性");
+		List<Course> courseList = getCourses();//
 
-		List<Student> studentList = new ArrayList<>();
-		studentList.add(student1);
-		studentList.add(student2);
-
-		Course course1 = new Course();
-		course1.setStudentId(999);
-		course1.setId(111);
-		course1.setCourseName("Java");
-
-		Course course2 = new Course();
-		course1.setStudentId(888);
-		course1.setId(333);
-		course1.setCourseName("Ruby");
-
-		List<Course> courseList = new ArrayList<>();
-		courseList.add(course1);
-		courseList.add(course2);
+		List<ApplicationStatus> statusList = getStatus();//
 
 		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
 		expectedStudentDetails.add(new StudentDetail());
@@ -89,42 +67,51 @@ public class StudentServiceTest {
 
 		when(repository.searchStudentsList()).thenReturn(studentList);
 		when(coursesRepository.searchCourses()).thenReturn(courseList);
-		when(converter.convertStudentDetails(studentList, courseList)).thenReturn(expectedStudentDetails);
+		when(converter.convertStudentDetails(studentList, courseList, statusList)).thenReturn(expectedStudentDetails);
+		when(applicationStatusRepository.searchStudentCourseStatusList()).thenReturn(statusList);
 		//実行
 		List<StudentDetail> actual = sut.searchStudentList();
 		//検証
 		assertNotNull(actual);
 		verify(repository, times(1)).searchStudentsList();
 		verify(coursesRepository, times(1)).searchCourses();
-		verify(converter, times(1)).convertStudentDetails(studentList, courseList);
+		verify(applicationStatusRepository, times(1)).searchStudentCourseStatusList();
 		Assertions.assertEquals(expectedStudentDetails, actual);
 	}
 
 	@Test
-	void 受講生IDで受講生の詳細を検索処理() {
-		int testId = 0;
-		Student student = new Student();
-		student.setId(testId);
-		List<Course> courseList = new ArrayList<>();
-		when(repository.searchStudent(testId)).thenReturn(student);
+	void 受講生IDで受講生の詳細を検索処理() throws Exception {
+		int testCpurseId = 333;
+		Student student = getStudent();//
+		List<Course> courseList = getCourses();//
+		ApplicationStatus status = new ApplicationStatus();
+		status.setStudentCourseId(testCpurseId);
+
+		when(repository.searchStudent(student.getId())).thenReturn(student);
 		when(coursesRepository.searchStudentCourse(student.getId())).thenReturn(courseList);
+		when(applicationStatusRepository.searchStudentCourseStatus(testCpurseId)).thenReturn(status);
 
-		StudentDetail actual = sut.searchStudent(testId);
-		StudentDetail expected = new StudentDetail(student, courseList);
+		StudentDetail actual = sut.searchStudent(student.getId());
+		StudentDetail expected = new StudentDetail(student, courseList, status);
 
-		verify(repository, times(1)).searchStudent(testId);
-		verify(coursesRepository, times(1)).searchStudentCourse(testId);
+		verify(repository, times(1)).searchStudent(student.getId());
+		verify(coursesRepository, times(1)).searchStudentCourse(student.getId());
+		verify(applicationStatusRepository, times(1))
+				.searchStudentCourseStatus(testCpurseId);
 		Assertions.assertEquals(expected, actual);
 	}
 
 	@Test
 	void 受講生詳細の登録処理() {
+		int testCpurseId = 0;
 		Student student = new Student();
 		student.setId(1);
 		List<Course> courseList = new ArrayList<>();
 		courseList.add(new Course());
 		courseList.add(new Course());
-		StudentDetail studentDetail = new StudentDetail(student, courseList);
+		ApplicationStatus status = new ApplicationStatus();
+		status.setStudentCourseId(testCpurseId);
+		StudentDetail studentDetail = new StudentDetail(student, courseList, status);
 
 		//呼びだしたときに具体的になにをするか
 		doAnswer(invocationOnMock -> {
@@ -147,12 +134,44 @@ public class StudentServiceTest {
 	void 受講生詳細の更新作業() {
 		Student student = new Student();
 		List<Course> courseList = new ArrayList<>();
-		StudentDetail studentDetail = new StudentDetail(student, courseList);
+		ApplicationStatus status = new ApplicationStatus();
+		StudentDetail studentDetail = new StudentDetail(student, courseList, status);
 
 		sut.updateStudent(studentDetail);
 
 		verify(repository, times(1)).updateStudent(studentDetail.getStudent());
 		verify(coursesRepository, times(studentDetail.getStudentCourseList().size())).updateStudentCourses(any(Course.class));
 
+	}
+
+	private static List<ApplicationStatus> getStatus() {
+		ApplicationStatus status1 = new ApplicationStatus(999, 222, KARI_MOSIKOMI);
+		ApplicationStatus status2 = new ApplicationStatus(888, 555, JUKOCHU);
+		List<ApplicationStatus> statusList = new ArrayList<>();
+		statusList.add(status1);
+		statusList.add(status2);
+		return statusList;
+	}
+
+	private static List<Course> getCourses() {
+		Course course1 = new Course(999, 111, "Java", LocalDate.now(), LocalDate.of(2026, 11, 30));
+		Course course2 = new Course(888, 333, "Ruby", LocalDate.now(), LocalDate.of(2026, 11, 30));
+		List<Course> courseList = new ArrayList<>();
+		courseList.add(course1);
+		courseList.add(course2);
+		return courseList;
+	}
+
+	private static List<Student> getStudents() {
+		Student student1 = new Student(999, "田中太郎", "タナカタロウ", "タナカ", "tgyhu@ghu.com", "東京", 20, "男性", "", false);
+		Student student2 = new Student(888, "田中次郎", "タナカジロウ", "", "tgy@ghu.com", "大阪", 55, "男性", "", false);
+		List<Student> studentList = new ArrayList<>();
+		studentList.add(student1);
+		studentList.add(student2);
+		return studentList;
+	}
+
+	private static Student getStudent() {
+		return new Student(999, "田中太郎", "タナカタロウ", "タナカ", "tgyhu@ghu.com", "東京", 20, "男性", "", false);
 	}
 }

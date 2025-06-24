@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository">
     <!-- 受講生の全件検索-->
-    <select id="searchStudentsList" resultType="Student">
+    <select id="searchStudentsList" resultType="raisetechtask.taskstudentsmanagement.finalversion.data.Student">
         SELECT *
         FROM students
     </select>
 
     <!-- 受講生の検索-->
-    <select id="searchStudent" resultType="Student">
+    <select id="searchStudent" resultType="raisetechtask.taskstudentsmanagement.finalversion.data.Student">
         SELECT *
         FROM students
         WHERE id = #{id}
     </select>
 
     <!--受講生の登録 -->
-    <insert id="registerStudent" parameterType="Student"
+    <insert id="registerStudent" parameterType="raisetechtask.taskstudentsmanagement.finalversion.data.Student"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO students(
-        full_name, furigana, nickname, email_address, address, age, gender, remark, is_Deleted)
+        full_name, furigana, nickname, email_address, address, age, gender, remark, is_deleted)
         VALUES(
         #{fullName}, #{furigana}, #{nickname}, #{emailAddress}, #{address}, #{age}, #{gender}, #{remark}, #{isDeleted})
     </insert>
 
     <!--受講生の更新 -->
-    <update id="updateStudent" parameterType="Student">
+    <update id="updateStudent" parameterType="raisetechtask.taskstudentsmanagement.finalversion.data.Student">
         UPDATE students
         SET
         full_name = #{fullName},

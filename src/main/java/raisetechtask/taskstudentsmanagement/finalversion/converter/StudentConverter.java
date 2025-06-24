@@ -1,6 +1,7 @@
 package raisetechtask.taskstudentsmanagement.finalversion.converter;
 
 import org.springframework.stereotype.Component;
+import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
@@ -23,18 +24,30 @@ public class StudentConverter {
 	 * @param courseList  受講生コース情報のリスト
 	 * @return 受講生詳細情報のリスト
 	 */
-	public List<StudentDetail> convertStudentDetails(List<Student> studentList, List<Course> courseList) {
+	public List<StudentDetail> convertStudentDetails(List<Student> studentList, List<Course> courseList, List<ApplicationStatus> statusList) {
 		List<StudentDetail> studentDetails = new ArrayList<>();
+
 		studentList.forEach(student -> {
-			StudentDetail studentDatail = new StudentDetail();
-			studentDatail.setStudent(student);
+			StudentDetail studentDetail = new StudentDetail();
+			studentDetail.setStudent(student);
 
 			List<Course> convertStudentCourses = courseList.stream()
-					.filter(course -> student.getId() == (course.getStudentId()))
-					.collect(Collectors.toList());
+					.filter(course -> student.getId() == (course.getStudentId()))//IDが一致するか確認
+					.collect(Collectors.toList());//一致したものをList化
+			studentDetail.setStudentCourseList(convertStudentCourses);//Detailにセット
 
-			studentDatail.setStudentCourseList(convertStudentCourses);
-			studentDetails.add(studentDatail);
+			ApplicationStatus representativeStatus = null;
+
+			if(! convertStudentCourses.isEmpty()) {  //上でList化したコース情報が空ではない場合（正常）　仮に空だった場合nullとなる
+				Course firstCourse = convertStudentCourses.getFirst();
+				representativeStatus = statusList.stream()
+						.filter(status -> firstCourse.getId() == status.getStudentCourseId())//IDが一致するか
+						.findFirst()
+						//コースIDに一致する申込状況がない場合は例外を投げる
+						.orElseThrow(() -> new IllegalArgumentException("対象のステータスが見つかりません。コースID: " + firstCourse.getId()));
+			}
+			studentDetail.setStatus(representativeStatus);
+			studentDetails.add(studentDetail);
 		});
 		return studentDetails;
 	}

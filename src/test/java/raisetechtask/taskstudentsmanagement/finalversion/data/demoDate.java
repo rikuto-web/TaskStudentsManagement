@@ -1,10 +1,6 @@
-package raisetechtask.taskstudentsmanagement.finalversion;
+package raisetechtask.taskstudentsmanagement.finalversion.data;
 
 import org.springframework.stereotype.Component;
-import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
 import java.time.LocalDate;
 
