@@ -15,6 +15,7 @@ import raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationS
 import raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +55,11 @@ public class StudentServiceTest {
 
 	@Test
 	void 受講生詳細の一覧検索_repositoryとconverterの処理が適切に呼び出せていること() {
-		List<Student> studentList = getStudents();
+		List<Student> studentList = getStudents();//
 
-		List<Course> courseList = getCourses();
+		List<Course> courseList = getCourses();//
 
-		List<ApplicationStatus> statusList = getStatus();
+		List<ApplicationStatus> statusList = getStatus();//
 
 		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
 		expectedStudentDetails.add(new StudentDetail());
@@ -81,8 +82,8 @@ public class StudentServiceTest {
 	@Test
 	void 受講生IDで受講生の詳細を検索処理() throws Exception {
 		int testCpurseId = 333;
-		Student student = getStudent();
-		List<Course> courseList = getCourses();
+		Student student = getStudent();//
+		List<Course> courseList = getCourses();//
 		ApplicationStatus status = new ApplicationStatus();
 		status.setStudentCourseId(testCpurseId);
 
@@ -144,15 +145,8 @@ public class StudentServiceTest {
 	}
 
 	private static List<ApplicationStatus> getStatus() {
-		ApplicationStatus status1 = new ApplicationStatus();
-		status1.setStudentCourseId(999);
-		status1.setId(222);
-		status1.setStatus(KARI_MOSIKOMI);
-		ApplicationStatus status2 = new ApplicationStatus();
-		status2.setStudentCourseId(888);
-		status2.setId(555);
-		status2.setStatus(JUKOCHU);
-
+		ApplicationStatus status1 = new ApplicationStatus(999, 222, KARI_MOSIKOMI);
+		ApplicationStatus status2 = new ApplicationStatus(888, 555, JUKOCHU);
 		List<ApplicationStatus> statusList = new ArrayList<>();
 		statusList.add(status1);
 		statusList.add(status2);
@@ -160,16 +154,8 @@ public class StudentServiceTest {
 	}
 
 	private static List<Course> getCourses() {
-		Course course1 = new Course();
-		course1.setStudentId(999);
-		course1.setId(111);
-		course1.setCourseName("Java");
-
-		Course course2 = new Course();
-		course1.setStudentId(888);
-		course1.setId(333);
-		course1.setCourseName("Ruby");
-
+		Course course1 = new Course(999, 111, "Java", LocalDate.now(), LocalDate.of(2026, 11, 30));
+		Course course2 = new Course(888, 333, "Ruby", LocalDate.now(), LocalDate.of(2026, 11, 30));
 		List<Course> courseList = new ArrayList<>();
 		courseList.add(course1);
 		courseList.add(course2);
@@ -177,24 +163,8 @@ public class StudentServiceTest {
 	}
 
 	private static List<Student> getStudents() {
-		Student student1 = new Student();
-		student1.setId(999);
-		student1.setFullName("田中太郎");
-		student1.setFurigana("タナカタロウ");
-		student1.setEmailAddress("tgyhu@ghu.com");
-		student1.setAddress("東京");
-		student1.setAge(20);
-		student1.setGender("男性");
-
-		Student student2 = new Student();
-		student1.setId(888);
-		student1.setFullName("田中次郎");
-		student1.setFurigana("タナカジロウ");
-		student1.setEmailAddress("tgy@ghu.com");
-		student1.setAddress("大阪");
-		student1.setAge(55);
-		student1.setGender("男性");
-
+		Student student1 = new Student(999, "田中太郎", "タナカタロウ", "タナカ", "tgyhu@ghu.com", "東京", 20, "男性", "", false);
+		Student student2 = new Student(888, "田中次郎", "タナカジロウ", "", "tgy@ghu.com", "大阪", 55, "男性", "", false);
 		List<Student> studentList = new ArrayList<>();
 		studentList.add(student1);
 		studentList.add(student2);
@@ -202,14 +172,6 @@ public class StudentServiceTest {
 	}
 
 	private static Student getStudent() {
-		Student student1 = new Student();
-		student1.setId(999);
-		student1.setFullName("田中太郎");
-		student1.setFurigana("タナカタロウ");
-		student1.setEmailAddress("tgyhu@ghu.com");
-		student1.setAddress("東京");
-		student1.setAge(20);
-		student1.setGender("男性");
-		return student1;
+		return new Student(999, "田中太郎", "タナカタロウ", "タナカ", "tgyhu@ghu.com", "東京", 20, "男性", "", false);
 	}
 }

@@ -8,7 +8,6 @@ import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -32,30 +31,22 @@ public class StudentConverter {
 			StudentDetail studentDetail = new StudentDetail();
 			studentDetail.setStudent(student);
 
-			// 1. 受講生に紐づくコースを全て抽出
 			List<Course> convertStudentCourses = courseList.stream()
-					.filter(course -> student.getId() == (course.getStudentId()))
-					.collect(Collectors.toList());
-			studentDetail.setStudentCourseList(convertStudentCourses);
+					.filter(course -> student.getId() == (course.getStudentId()))//IDが一致するか確認
+					.collect(Collectors.toList());//一致したものをList化
+			studentDetail.setStudentCourseList(convertStudentCourses);//Detailにセット
 
-			// 2. StudentDetail に設定する単一の ApplicationStatus を決定するロジック
-			//    ここでは、もし学生にコースが1つでもあれば、その最初のコースのStatusを設定します。
-			//    もしコースがなければ、Statusはnullになります。
 			ApplicationStatus representativeStatus = null;
 
-			if ( ! convertStudentCourses.isEmpty() ) {
+			if(! convertStudentCourses.isEmpty()) {  //上でList化したコース情報が空ではない場合（正常）　仮に空だった場合nullとなる
 				Course firstCourse = convertStudentCourses.getFirst();
-				Optional<ApplicationStatus> foundStatus = statusList.stream()
-						.filter(status -> firstCourse.getId() == status.getStudentCourseId())
-						.findFirst();
-
-				if ( foundStatus.isPresent() ) {
-					representativeStatus = foundStatus.get();
-				}
+				representativeStatus = statusList.stream()
+						.filter(status -> firstCourse.getId() == status.getStudentCourseId())//IDが一致するか
+						.findFirst()
+						//コースIDに一致する申込状況がない場合は例外を投げる
+						.orElseThrow(() -> new IllegalArgumentException("対象のステータスが見つかりません。コースID: " + firstCourse.getId()));
 			}
-			// 決定した単一のStatusをStudentDetailに設定
 			studentDetail.setStatus(representativeStatus);
-
 			studentDetails.add(studentDetail);
 		});
 		return studentDetails;

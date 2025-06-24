@@ -54,11 +54,7 @@ public class StudentController {
 	 */
 	@GetMapping("/student/{id}")
 	public StudentDetail getStudent(@PathVariable @PositiveOrZero @Max(999) int id) {
-		try {
-			return service.searchStudent(id);
-		} catch ( Exception e ) {
-			throw new RuntimeException(e);
-		}
+		return service.searchStudent(id);
 	}
 
 	/**

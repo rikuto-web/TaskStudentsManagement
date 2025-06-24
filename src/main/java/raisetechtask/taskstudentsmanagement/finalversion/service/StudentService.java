@@ -14,7 +14,6 @@ import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepo
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum.KARI_MOSIKOMI;
 
@@ -79,21 +78,16 @@ public class StudentService {
 	 * @return 受講生
 	 */
 	@Transactional
-	public StudentDetail searchStudent(int id) throws Exception {
-		Student student = studentRepository.searchStudent(id);
-		List<Course> course = coursesRepository.searchStudentCourse(student.getId());
-		Optional<Integer> courseById = course.stream()//CourseがListのため一旦Optionalに変換
-				.map(Course::getId)//処理内容はコースリストからgetIdをループさせる
-				.findFirst();//最初に取得したidを使用する
-		int courseId;//intで使用するための事前準備
-		ApplicationStatus status;//ApplicationStatusを使用するための事前準備
-		if ( courseById.isPresent() ) {  //isPresentで最初に取得したOptionalのgetIdの有無・nullかをチェック
-			courseId = courseById.get();//存在した場合はgetメソッドでIDを取得
-			status = applicationStatusRepository.searchStudentCourseStatus(courseId);//申込状況の登録時に取得したIDを仕様
-		} else {
-			throw new NoSuchFieldException("Course not found for student ID: " + student.getId());//nullやidがなかった場合例外をthrow
+	public StudentDetail searchStudent(int id) {
+		Student student = studentRepository.searchStudent(id);//受講生のID検索
+		List<Course> courseList = coursesRepository.searchStudentCourse(student.getId());//受講生IDに紐づいたコース検索
+		if(courseList.isEmpty()) {
+			return null; // 想定していないがコースがなければnullを返す
 		}
-		return new StudentDetail(student, course, status);//detailとして３つの情報を渡す
+		int courseId = courseList.getFirst().getId();//Listにある最初のIDを取得
+
+		ApplicationStatus status = applicationStatusRepository.searchStudentCourseStatus(courseId);//intで取得したコースIDを渡す
+		return new StudentDetail(student, courseList, status);
 	}
 
 	/**
@@ -130,12 +124,12 @@ public class StudentService {
 	@Transactional
 	public void updateStudent(StudentDetail studentDetail) {
 		studentRepository.updateStudent(studentDetail.getStudent());
-		for ( Course studentCourse : studentDetail.getStudentCourseList() ) {
+		for(Course studentCourse : studentDetail.getStudentCourseList()) {
 			coursesRepository.updateStudentCourses(studentCourse);
 
 			ApplicationStatusEnum updateStatus = studentDetail.getStatus().getStatus();//studentDetailにあるstatusにあるEnum型のstatus
-			Integer courseId = studentCourse.getId();
-			ApplicationStatus existingStatus = applicationStatusRepository.searchStudentCourseStatus(courseId);
+			int courseId = studentCourse.getId();
+			applicationStatusRepository.searchStudentCourseStatus(courseId);
 			applicationStatusRepository.updateStatus(courseId, updateStatus); //コースIDとstatusをセットして更新
 		}
 	}
