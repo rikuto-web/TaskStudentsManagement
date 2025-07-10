@@ -1,12 +1,12 @@
 package raisetechtask.taskstudentsmanagement.finalversion.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import raisetechtask.taskstudentsmanagement.finalversion.converter.StudentConverter;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
@@ -19,13 +19,15 @@ import raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationS
 import raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,12 +35,11 @@ import static org.mockito.Mockito.when;
 import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.KARI_MOSIKOMI;
 
 
-@ExtendWith(MockitoExtension.class) // Mockitoを使用するためのJUnit 5 Extension
+@ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
-	// @Mock: モックオブジェクトを作成
 	@Mock
-	private StudentsRepository studentRepository; // 名前をrepositoryからstudentRepositoryに変更しました
+	private StudentsRepository studentRepository;
 
 	@Mock
 	private CoursesRepository coursesRepository;
@@ -49,190 +50,138 @@ class StudentServiceTest {
 	@Mock
 	private ApplicationStatusRepository applicationStatusRepository;
 
-	// @InjectMocks: モックオブジェクトをServiceに自動的に注入
 	@InjectMocks
-	private StudentService studentService; // sutからstudentServiceに変更しました
-
-	// 各テストメソッド実行前にServiceインスタンスを初期化（@InjectMocksが自動でやってくれるので不要ですが、残しておいても問題ありません）
-	@BeforeEach
-	void setup() {
-		// studentService = new StudentService(studentRepository, coursesRepository, converter, applicationStatusRepository);
-		// @InjectMocksを使用しているため、この行は通常不要です。
-		// MockitoExtensionが自動的にstudentServiceのコンストラクタにモックを注入してくれます。
-	}
+	private StudentService studentService;
 
 	@Test
-	@DisplayName("全受講生の詳細一覧検索が正しく行われ、リポジトリとコンバーターが適切に呼び出されること")
 	void searchStudentList_リポジトリとコンバーターが適切に呼び出されること() {
-		// Given (準備):
-		// ダミーのデータを用意します。ここではIDを持つStudentオブジェクトを具体的に作成します。
-		// Serviceはリポジトリが正しいデータを返すことを「信頼する」ため、ダミーデータで十分です。
-		Student student1 = Student.builder().id(1).fullName("田中 太郎").build();
-		Student student2 = Student.builder().id(2).fullName("鈴木 花子").build();
-		List<Student> dummyStudentList = List.of(student1, student2);
+		List<Student> dummyStudentList = List.of(
+				Student.builder().id(1).fullName("田中 太郎").build(),
+				Student.builder().id(2).fullName("鈴木 花子").build()
+		);
+		List<StudentCourse> dummyStudentCourseList = List.of(
+				StudentCourse.builder().id(101).studentId(1).courseName("Java").build(),
+				StudentCourse.builder().id(102).studentId(2).courseName("Ruby").build()
+		);
+		List<ApplicationStatus> dummyStatusList = List.of(
+				ApplicationStatus.builder().id(201).studentCourseId(101).status(ApplicationStatusEnum.HON_MOSIKOMI).build(),
+				ApplicationStatus.builder().id(202).studentCourseId(102).status(ApplicationStatusEnum.JUKOCHU).build()
+		);
 
-		StudentCourse course1 = StudentCourse.builder().id(101).studentId(1).courseName("Java").build();
-		StudentCourse course2 = StudentCourse.builder().id(102).studentId(2).courseName("Ruby").build();
-		List<StudentCourse> dummyStudentCourseList = List.of(course1, course2);
+		StudentDetail expectedStudentDetail1 = new StudentDetail(Student.builder().id(1).build(), List.of());
+		StudentDetail expectedStudentDetail2 = new StudentDetail(Student.builder().id(2).build(), List.of());
+		List<StudentDetail> expectedServiceResult = List.of(expectedStudentDetail1, expectedStudentDetail2);
 
-		ApplicationStatus status1 = ApplicationStatus.builder().id(201).studentCourseId(101).status(ApplicationStatusEnum.HON_MOSIKOMI).build();
-		ApplicationStatus status2 = ApplicationStatus.builder().id(202).studentCourseId(102).status(ApplicationStatusEnum.JUKOCHU).build();
-		List<ApplicationStatus> dummyStatusList = List.of(status1, status2);
-
-		// コンバーターが返すStudentDetailのリストもダミーで用意
-		StudentDetail dummyStudentDetail1 = new StudentDetail(student1, List.of(new CourseApplicationDetail(course1, status1)));
-		StudentDetail dummyStudentDetail2 = new StudentDetail(student2, List.of(new CourseApplicationDetail(course2, status2)));
-		List<StudentDetail> expectedStudentDetails = List.of(dummyStudentDetail1, dummyStudentDetail2);
-
-		// Mockの設定:
-		// Serviceがリポジトリを呼び出したときに、事前に用意したダミーデータを返すように設定します。
 		when(studentRepository.searchStudentsList()).thenReturn(dummyStudentList);
 		when(coursesRepository.searchCourses()).thenReturn(dummyStudentCourseList);
 		when(applicationStatusRepository.searchStudentCourseStatusList()).thenReturn(dummyStatusList);
-
-		// Serviceがコンバーターを呼び出したときに、期待するStudentDetailのリストを返すように設定します。
 		when(converter.convertStudentDetails(dummyStudentList, dummyStudentCourseList, dummyStatusList))
-				.thenReturn(expectedStudentDetails);
+				.thenReturn(expectedServiceResult);
 
-		// When (実行):
-		// テスト対象のServiceメソッドを実行します。
 		List<StudentDetail> actualResult = studentService.searchStudentList();
 
-		// Then (検証):
-		// 戻り値が期待通りであること
-		assertThat(actualResult).isNotNull();
-		assertThat(actualResult).isEqualTo(expectedStudentDetails); // 厳密にequalsで比較する場合はStudentDetailにequals/hashCodeを実装してください
-
-		// リポジトリメソッドが正確に1回ずつ呼び出されたことを検証します。
 		verify(studentRepository, times(1)).searchStudentsList();
 		verify(coursesRepository, times(1)).searchCourses();
 		verify(applicationStatusRepository, times(1)).searchStudentCourseStatusList();
-
-		// コンバーターメソッドが正しい引数で正確に1回呼び出されたことを検証します。
 		verify(converter, times(1)).convertStudentDetails(dummyStudentList, dummyStudentCourseList, dummyStatusList);
 	}
 
 
 	@Test
-	@DisplayName("指定したIDの受講生詳細が取得できること")
 	void searchStudent_指定したIDの受講生詳細が取得できること() {
-		// Given (準備):
 		int targetStudentId = 999;
-		// 特定のIDを持つダミーの学生、コース、ステータスを作成
 		Student dummyStudent = Student.builder().id(targetStudentId).fullName("テスト 太郎").build();
+
 		StudentCourse dummyCourse = StudentCourse.builder().id(101).studentId(targetStudentId).courseName("テストコース").build();
 		ApplicationStatus dummyStatus = ApplicationStatus.builder().id(201).studentCourseId(101).status(KARI_MOSIKOMI).build();
 
-		List<StudentCourse> dummyCourseList = List.of(dummyCourse); // 1つのコースを持つリスト
+		List<StudentCourse> dummyCourseList = List.of(dummyCourse);
 
-		// Serviceメソッドが最終的に返すStudentDetailを直接準備
-		CourseApplicationDetail dummyCourseApplicationDetail = new CourseApplicationDetail(dummyCourse, dummyStatus);
-		StudentDetail expectedStudentDetail = new StudentDetail(dummyStudent, List.of(dummyCourseApplicationDetail));
+		StudentDetail expectedServiceResult = new StudentDetail(dummyStudent, List.of(new CourseApplicationDetail(dummyCourse, dummyStatus)));
 
-		// Mockの設定:
-		// Serviceがリポジトリを呼び出したときに、事前に用意したダミーデータを返すように設定します。
 		when(studentRepository.searchStudent(targetStudentId)).thenReturn(dummyStudent);
 		when(coursesRepository.searchStudentCourses(targetStudentId)).thenReturn(dummyCourseList);
-		when(applicationStatusRepository.searchStudentCourseStatus(dummyCourse.getId())).thenReturn(dummyStatus); // コースIDで特定のステータスを返す
+		when(applicationStatusRepository.searchStudentCourseStatus(dummyCourse.getId())).thenReturn(dummyStatus);
 
-		// When (実行):
 		StudentDetail actualResult = studentService.searchStudent(targetStudentId);
 
-		// Then (検証):
-		// 戻り値が期待通りであること
 		assertThat(actualResult).isNotNull();
-		assertThat(actualResult.getStudent().getId()).isEqualTo(expectedStudentDetail.getStudent().getId());
-		assertThat(actualResult.getStudent().getFullName()).isEqualTo(expectedStudentDetail.getStudent().getFullName());
+		assertThat(actualResult.getStudent()).isEqualTo(dummyStudent);
 		assertThat(actualResult.getStudentCourseList()).hasSize(1);
-		assertThat(actualResult.getStudentCourseList().get(0).getStudentCourse().getCourseName())
-				.isEqualTo(expectedStudentDetail.getStudentCourseList().get(0).getStudentCourse().getCourseName());
-		assertThat(actualResult.getStudentCourseList().get(0).getApplicationStatus().getStatus())
-				.isEqualTo(expectedStudentDetail.getStudentCourseList().get(0).getApplicationStatus().getStatus());
+		assertThat(actualResult.getStudentCourseList().get(0).getStudentCourse()).isEqualTo(dummyCourse);
+		assertThat(actualResult.getStudentCourseList().get(0).getApplicationStatus()).isEqualTo(dummyStatus);
 
-		// リポジトリメソッドが正確に1回ずつ呼び出されたことを検証します。
 		verify(studentRepository, times(1)).searchStudent(targetStudentId);
 		verify(coursesRepository, times(1)).searchStudentCourses(targetStudentId);
-		verify(applicationStatusRepository, times(1)).searchStudentCourseStatus(dummyCourse.getId()); // コースIDで呼び出されることを検証
-
-		// コンバーターメソッドはsearchStudent()では呼び出されないため、呼び出されていないことを確認
+		verify(applicationStatusRepository, times(1)).searchStudentCourseStatus(dummyCourse.getId());
 		verify(converter, never()).convertStudentDetails(any(), any(), any());
 	}
 
 
 	@Test
-	@DisplayName("存在しない受講生IDの場合にStudentNotFoundExceptionがスローされること")
 	void searchStudent_存在しないIDの場合に例外がスローされること() {
-		// Given (準備):
 		int nonExistentStudentId = 9999;
 
-		// Mockの設定:
-		// リポジトリがnullを返すように設定し、学生が見つからないシナリオを模倣します。
 		when(studentRepository.searchStudent(nonExistentStudentId)).thenReturn(null);
 
-		// When & Then (実行と検証):
-		// 特定の例外がスローされることを検証します。
 		assertThatThrownBy(() -> studentService.searchStudent(nonExistentStudentId))
-				.isInstanceOf(StudentNotFoundException.class) // StudentNotFoundExceptionがスローされること
-				.hasMessage("Student with ID " + nonExistentStudentId + " not found."); // 例外メッセージも検証
+				.isInstanceOf(StudentNotFoundException.class)
+				.hasMessage("指定された受講生" + nonExistentStudentId + "が見つかりませんでした。");
 
-		// リポジトリメソッドが正確に1回呼び出されたことを検証します。
 		verify(studentRepository, times(1)).searchStudent(nonExistentStudentId);
-		// 学生が見つからないため、コースやステータスのリポジトリは呼び出されないことを検証します。
 		verify(coursesRepository, never()).searchStudentCourses(anyInt());
 		verify(applicationStatusRepository, never()).searchStudentCourseStatus(anyInt());
 	}
 
 
 	@Test
-	@DisplayName("新規受講生とコースが適切に登録されること")
-	void registerStudent_新規受講生とコースが登録できること() {
-		// Given (準備):
-		// 登録する新しい受講生とコースのデータを作成します。
-		// IDはDBで自動生成されることを想定し、ここでは設定しません。
-		Student newStudent = Student.builder()
-				.id(10)
-				.fullName("新垣結衣")
-				.furigana("アラガキユイ")
-				.emailAddress("aragaki.yui@example.com")
+	void registerStudent_新規受講生とコースが登録できること_ミニマムバージョン() {
+		Student newStudentInput = Student.builder()
+				.fullName("テストテスト")
+				.furigana("テストテスト")
+				.emailAddress("testtest@example.com")
 				.build();
 
-		StudentCourse newCourse = StudentCourse.builder()
+		StudentCourse newCourseInput = StudentCourse.builder()
 				.courseName("Python入門")
+				.courseStartDay(LocalDate.of(2000, 1, 1))
+				.courseCompletionDay(LocalDate.of(2001, 1, 1))
 				.build();
-		ApplicationStatus newStatus = ApplicationStatus.builder()
-				.status(KARI_MOSIKOMI)
+
+		ApplicationStatus newStatusInput = ApplicationStatus.builder()
+				.status(ApplicationStatusEnum.HON_MOSIKOMI)
 				.build();
 
-		// 登録用StudentDetailを作成
-		CourseApplicationDetail courseDetailToRegister = new CourseApplicationDetail(newCourse, newStatus);
-		StudentDetail studentDetailToRegister = new StudentDetail(newStudent, List.of(courseDetailToRegister));
+		CourseApplicationDetail courseDetailToRegister = new CourseApplicationDetail(newCourseInput, newStatusInput);
+		StudentDetail studentDetailToRegister = new StudentDetail(newStudentInput, List.of(courseDetailToRegister));
 
-		// Mockの設定:
-		// studentRepository.registerStudent()が呼び出された際に、引数として渡されたStudentオブジェクトのIDを設定するようにモックします。
-		// これはServiceが登録後にDBから割り当てられたIDを受け取る挙動をシミュレートします。
-		doNothing().when(studentRepository).registerStudent(any(Student.class));
-		// registerStudentCoursesとregisterStatusはvoidメソッドなので、何もしないように設定 (デフォルトでdoNothing)
-		// doNothing().when(coursesRepository).registerStudentCourses(any(StudentCourse.class));
-		// doNothing().when(applicationStatusRepository).registerStatus(anyInt(), any(String.class));
+		final int expectedStudentIdAfterRegistration = 10;
+		doAnswer(new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) throws Throwable {
+				Student student = invocation.getArgument(0);
+				student.setId(expectedStudentIdAfterRegistration);
+				return null;
+			}
+		}).when(studentRepository).registerStudent(any(Student.class));
 
+		final int expectedCourseIdAfterRegistration = 1001;
+		doAnswer(new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) throws Throwable {
+				StudentCourse course = invocation.getArgument(0);
+				course.setId(expectedCourseIdAfterRegistration);
+				course.setStudentId(expectedStudentIdAfterRegistration);
+				course.setCourseStartDay(LocalDate.now());
+				course.setCourseCompletionDay(LocalDate.now().plusYears(1));
+				return null;
+			}
+		}).when(coursesRepository).registerStudentCourses(any(StudentCourse.class));
 
-		// When (実行):
-		StudentDetail actualRegisteredDetail = studentService.registerStudent(studentDetailToRegister);
+		studentService.registerStudent(studentDetailToRegister);
 
-		// Then (検証):
-		// 戻り値のStudentDetailがnullではないこと
-		assertThat(actualRegisteredDetail).isNotNull();
-		// 登録後にService内で設定されたIDが正しいこと（モックで設定したIDと一致すること）
-		assertThat(actualRegisteredDetail.getStudent().getId()).isEqualTo(10);
-		assertThat(actualRegisteredDetail.getStudent().getFullName()).isEqualTo("新垣結衣");
-		assertThat(actualRegisteredDetail.getStudentCourseList()).hasSize(1);
-		assertThat(actualRegisteredDetail.getStudentCourseList().get(0).getStudentCourse().getStudentId()).isEqualTo(10);
-		assertThat(actualRegisteredDetail.getStudentCourseList().get(0).getApplicationStatus().getStatus()).isEqualTo(KARI_MOSIKOMI);
-
-
-		// リポジトリメソッドが正確に呼び出されたことを検証します。
-		// registerStudentが1回、正しいStudentオブジェクトで呼び出されたこと
-		verify(studentRepository, times(1)).registerStudent(newStudent); // newStudentオブジェクトが渡されたことを検証
-
+		verify(studentRepository, times(1)).registerStudent(newStudentInput);
+		verify(coursesRepository, times(1)).registerStudentCourses(newCourseInput);
+		verify(applicationStatusRepository, times(1)).registerStatus(eq(expectedCourseIdAfterRegistration), eq(KARI_MOSIKOMI.name()));
 	}
 }

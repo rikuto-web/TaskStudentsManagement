@@ -60,19 +60,19 @@ class StudentControllerTest {
 
 	@Test
 	void 受講生詳細の登録処理の呼び出しができていること() throws Exception {
-		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム",
+		Student requestStudent = createStudent(7, "田中太郎", "タナカタロウ", "ニックネーム",
 				"register@example.com", "東京", 25, "男性", "備考", false);
 
-		StudentCourse studentCourse = new StudentCourse(10, 7, "Java入門", LocalDate.now(), LocalDate.now().plusMonths(3));
-		ApplicationStatus applicationStatus = new ApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
-		CourseApplicationDetail courseDetail = new CourseApplicationDetail(studentCourse, applicationStatus);
+		StudentCourse studentCourse = createStudentCourse(10, 7, "Java入門", LocalDate.of(2025, 4, 1), LocalDate.of(2025, 7, 1));
+		ApplicationStatus applicationStatus = createApplicationStatus(10, 10, ApplicationStatusEnum.JUKOCHU);
+		CourseApplicationDetail courseDetail = createCourseApplicationDetail(studentCourse, applicationStatus);
 		List<CourseApplicationDetail> courseList = List.of(courseDetail);
 
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, courseList);
+		StudentDetail requestStudentDetail = createStudentDetail(requestStudent, courseList);
 
-		Student registeredStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム",
+		Student registeredStudent = createStudent(7, "田中太郎", "タナカタロウ", "ニックネーム",
 				"register@example.com", "東京", 25, "男性", "備考", false);
-		StudentDetail expectedRegisteredStudentDetail = new StudentDetail(registeredStudent, courseList);
+		StudentDetail expectedRegisteredStudentDetail = createStudentDetail(registeredStudent, courseList);
 
 		when(service.registerStudent(any(StudentDetail.class))).thenReturn(expectedRegisteredStudentDetail);
 
@@ -88,14 +88,14 @@ class StudentControllerTest {
 
 	@Test
 	void 受講生詳細の更新の呼び出しができていること() throws Exception {
-		Student requestStudent = new Student(7, "田中太郎", "タナカタロウ", "ニックネーム",
+		Student requestStudent = createStudent(7, "田中太郎", "タナカタロウ", "ニックネーム",
 				"register@example.com", "東京", 25, "男性", "備考", false);
 
 		List<CourseApplicationDetail> courseDetails = new ArrayList<>();
 
-		StudentDetail requestStudentDetail = new StudentDetail(requestStudent, courseDetails);
+		StudentDetail requestStudentDetail = createStudentDetail(requestStudent, courseDetails);
 
-		Student updateStudent = new Student(7, "田中次郎", "タナカジロウ", "ニックネーム",
+		Student updateStudent = createStudent(7, "田中次郎", "タナカジロウ", "ニックネーム",
 				"register@example.com", "東京", 25, "男性", "備考", false);
 		List<CourseApplicationDetail> updatedCourseDetails = new ArrayList<>();
 
@@ -146,4 +146,45 @@ class StudentControllerTest {
 				)));
 	}
 
+	//region Helper Methods
+	private Student createStudent(int id, String fullName, String furigana, String nickname, String emailAddress, String address, int age, String gender, String remark, boolean isDeleted) {
+		return Student.builder()
+				.id(id)
+				.fullName(fullName)
+				.furigana(furigana)
+				.nickname(nickname)
+				.emailAddress(emailAddress)
+				.address(address)
+				.age(age)
+				.gender(gender)
+				.remark(remark)
+				.isDeleted(isDeleted)
+				.build();
+	}
+
+	private StudentCourse createStudentCourse(int id, int studentId, String courseName, LocalDate courseStartDay, LocalDate courseCompletionDay) {
+		return StudentCourse.builder()
+				.id(id)
+				.studentId(studentId)
+				.courseName(courseName)
+				.courseStartDay(LocalDate.now())
+				.courseCompletionDay(LocalDate.now().plusMonths(3))
+				.build();
+	}
+
+	private ApplicationStatus createApplicationStatus(int id, int studentCourseId, ApplicationStatusEnum status) {
+		return ApplicationStatus.builder()
+				.id(id)
+				.studentCourseId(studentCourseId)
+				.status(status)
+				.build();
+	}
+
+	private CourseApplicationDetail createCourseApplicationDetail(StudentCourse studentCourse, ApplicationStatus applicationStatus) {
+		return new CourseApplicationDetail(studentCourse, applicationStatus);
+	}
+
+	private StudentDetail createStudentDetail(Student student, List<CourseApplicationDetail> courseApplicationDetails) {
+		return new StudentDetail(student, courseApplicationDetails);
+	}
 }

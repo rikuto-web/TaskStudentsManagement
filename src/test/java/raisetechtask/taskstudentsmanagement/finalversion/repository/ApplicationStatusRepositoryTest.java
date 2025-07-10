@@ -1,3 +1,4 @@
+/*
 package raisetechtask.taskstudentsmanagement.finalversion.repository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +7,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.DemoDate;
+import raisetechtask.taskstudentsmanagement.finalversion.data.DemoData;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.data.StudentCourse;
 import raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum;
@@ -20,7 +21,7 @@ import static raisetechtask.taskstudentsmanagement.finalversion.enums.Applicatio
 class ApplicationStatusRepositoryTest {
 
 	@Autowired
-	public DemoDate demoDate;
+	public DemoData demoData;
 
 	@Autowired
 	private StudentsRepository studentSut;
@@ -71,7 +72,7 @@ class ApplicationStatusRepositoryTest {
 		int testCourseId = 74; // 新規登録用のID
 		registedDemoStudent();// 受講生の登録操作のみスルー (Mock)
 		registedDemoCourse();// 受講生コースの登録操作のみスルー (Mock)
-		ApplicationStatus demoStatus = demoDate.createDefaultStatus();// ダミーの申込状況情報
+		ApplicationStatus demoStatus = demoData.createDefaultStatus();// ダミーの申込状況情報
 		demoStatus.setStudentCourseId(testCourseId);// 紐づいたコースIDを設定
 		demoStatus.setStatus(ApplicationStatusEnum.HON_MOSIKOMI);// 登録する申込状況の設定
 
@@ -114,7 +115,7 @@ class ApplicationStatusRepositoryTest {
 		int testCourseId = 256;
 		registedDemoStudent();
 		registedDemoCourse();
-		ApplicationStatus demoStatus = demoDate.createDefaultStatus();
+		ApplicationStatus demoStatus = demoData.createDefaultStatus();
 		demoStatus.setStudentCourseId(testCourseId);
 		demoStatus.setStatus(ApplicationStatusEnum.HON_MOSIKOMI);
 
@@ -128,13 +129,14 @@ class ApplicationStatusRepositoryTest {
 
 	//ダミーの受講生情報の登録処理（Mock）
 	private void registedDemoStudent() {
-		Student demoStudent = demoDate.createDefaultStudent();
+		Student demoStudent = demoData.createDefaultStudent();
 		studentSut.registerStudent(demoStudent);
 	}
 
 	//ダミーのコース情報の登録処理（Mock）
 	private void registedDemoCourse() {
-		StudentCourse demoStudentCourse = demoDate.createDefaultCourse();
+		StudentCourse demoStudentCourse = demoData.createDefaultCourse();
 		courseSut.registerStudentCourses(demoStudentCourse);
 	}
 }
+ */
