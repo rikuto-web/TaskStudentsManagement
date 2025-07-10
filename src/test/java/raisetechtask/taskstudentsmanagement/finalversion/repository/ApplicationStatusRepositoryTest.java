@@ -13,7 +13,7 @@ import raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatus
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.KARI_MOSIKOMI;
-import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.fromDisplayValue;
+import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.inputDisplayValue;
 
 @MybatisTest
 @ComponentScan(basePackages = "raisetechtask.taskstudentsmanagement.finalversion")
@@ -96,7 +96,7 @@ class ApplicationStatusRepositoryTest {
 		ApplicationStatus demoStatus = getApplicationStatus();
 
 		String updateStatus = ("受講中");
-		ApplicationStatusEnum updateDemoStatus = fromDisplayValue(updateStatus);
+		ApplicationStatusEnum updateDemoStatus = inputDisplayValue(updateStatus);
 
 		// Act:
 		int update = applicationStatusRepository.updateStatus(demoStatus.getStudentCourseId(), updateDemoStatus);

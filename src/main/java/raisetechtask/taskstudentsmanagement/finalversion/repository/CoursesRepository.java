@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * 受講生コーステーブルと紐づくrepositoryです。
+ * 検索・登録・更新を行います。
  */
 @Mapper
 public interface CoursesRepository {
@@ -34,7 +35,7 @@ public interface CoursesRepository {
 	void registerStudentCourses(StudentCourse studentsStudentCourse);
 
 	/**
-	 * コース名の更新を行います。
+	 * 受講生IDと紐づいたコース情報の更新を行います。
 	 *
 	 * @param studentStudentCourseList コース情報
 	 */

@@ -22,13 +22,13 @@ class ApplicationStatusEnumTest {
 	@ParameterizedTest
 	@MethodSource("provideDisplayValueAndEnum")
 	void 受け取った表示名がEnum定数に適切に変換されること(String displayValue, ApplicationStatusEnum expectedEnum) {
-		assertThat(ApplicationStatusEnum.fromDisplayValue(displayValue)).isEqualTo(expectedEnum);
+		assertThat(ApplicationStatusEnum.inputDisplayValue(displayValue)).isEqualTo(expectedEnum);
 	}
 
 	@ParameterizedTest
 	@MethodSource("provideInvalidDisplayValues")
 	void 特定の例外がスローされること(String invalidDisplayValue) {
-		assertThatThrownBy(() -> ApplicationStatusEnum.fromDisplayValue(invalidDisplayValue))
+		assertThatThrownBy(() -> ApplicationStatusEnum.inputDisplayValue(invalidDisplayValue))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("存在しない定数です。");
 	}

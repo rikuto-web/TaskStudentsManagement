@@ -11,17 +11,40 @@ import java.util.List;
 
 public interface ApplicationStatusRepository {
 
-	//申し込み状況の全件検索
+	/**
+	 * 申込状況の検索（全件）を行います。
+	 *
+	 * @return 申込状況
+	 */
 	List<ApplicationStatus> searchStudentCourseStatusList();
 
-	//コースIDに紐づいた申し込み状況の検索
+	/**
+	 * 受講生コースIDに紐づいた申込状況の検索を行います。
+	 *
+	 * @param studentCourseId 受講生コースID
+	 * @return 受講生コースIDに紐づいた申込状況
+	 */
 	ApplicationStatus searchStudentCourseStatus(int studentCourseId);
 
-	//申し込み状況の登録処理_戻り値をintにすることで整数で成功・失敗の判断を行う
+	/**
+	 * 受講生コースIDに紐づいた申込状況の登録を行います。
+	 * 戻り値をintとし処理結果を行数で返します。
+	 *
+	 * @param studentCourseId 受講生コースID
+	 * @param status          受講生コースIDに紐づいた申込状況
+	 * @return 処理行数
+	 */
 	int registerStatus(@Param("studentCourseId") int studentCourseId, @Param("status") String status);
 
 
-	//申し込み状況の更新処理_戻り値をintにすることで整数で成功・失敗の判断を行う
+	/**
+	 * 受講生コースIDに紐づいた申込状況の更新を行います。
+	 * 戻り値をintとし処理結果を行数で返します。
+	 *
+	 * @param studentCourseId 受講生コースID
+	 * @param Enumstatus      Enum文字の申込状況
+	 * @return 処理行数
+	 */
 	int updateStatus(@Param("studentCourseId") int studentCourseId, @Param("status") ApplicationStatusEnum Enumstatus);
 
 }

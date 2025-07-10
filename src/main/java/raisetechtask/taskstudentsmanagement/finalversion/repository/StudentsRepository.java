@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 受講生テーブルと紐づくrepositoryです。
+ * 受講生の検索・登録・更新を行います。
  */
 @Mapper
 public interface StudentsRepository {
@@ -28,7 +29,7 @@ public interface StudentsRepository {
 	Student searchStudent(int id);
 
 	/**
-	 * 受講生の登録を行います。IDに関しては自動採番を行う。
+	 * 受講生の登録を行います。IDに関しては自動採番を行います。
 	 *
 	 * @param student 個人情報
 	 */
@@ -47,5 +48,6 @@ public interface StudentsRepository {
 	 * @param gender 検索したい性別（例: "男性", "女性"）
 	 * @return 該当する受講生の一覧
 	 */
+	//
 	List<Student> searchStudentsByGender(@Param("gender") String gender);
 }
