@@ -1,4 +1,4 @@
-package raisetechtask.taskstudentsmanagement.finalversion.data;
+package raisetechtask.taskstudentsmanagement.finalversion.enums;
 
 
 public enum ApplicationStatusEnum {
@@ -25,8 +25,8 @@ public enum ApplicationStatusEnum {
 
 	//リクエストされた情報を定数に変換する操作
 	public static ApplicationStatusEnum fromDisplayValue(String displayValue) {
-		for ( ApplicationStatusEnum statusEnum : ApplicationStatusEnum.values() ) {
-			if ( statusEnum.displayValue.equals(displayValue) ) {
+		for(ApplicationStatusEnum statusEnum : ApplicationStatusEnum.values()) {
+			if(statusEnum.displayValue.equals(displayValue)) {
 				return statusEnum;
 			}
 		}

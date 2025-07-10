@@ -18,7 +18,7 @@ import lombok.Setter;
 @Builder
 public class Student {
 	@PositiveOrZero
-	private int id;
+	private Integer id;
 	private String fullName;
 	private String furigana;
 	private String nickname;

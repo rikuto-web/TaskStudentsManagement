@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class Course {
+public class StudentCourse {
 	@PositiveOrZero
 	private int id;
 	private int studentId;

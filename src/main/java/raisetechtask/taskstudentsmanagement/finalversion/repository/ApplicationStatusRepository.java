@@ -3,7 +3,7 @@ package raisetechtask.taskstudentsmanagement.finalversion.repository;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
+import raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum;
 
 import java.util.List;
 
@@ -18,7 +18,8 @@ public interface ApplicationStatusRepository {
 	ApplicationStatus searchStudentCourseStatus(int studentCourseId);
 
 	//申し込み状況の登録処理_戻り値をintにすることで整数で成功・失敗の判断を行う
-	int registerStatus(ApplicationStatus applicationStatus);
+	int registerStatus(@Param("studentCourseId") int studentCourseId, @Param("status") String status);
+
 
 	//申し込み状況の更新処理_戻り値をintにすることで整数で成功・失敗の判断を行う
 	int updateStatus(@Param("studentCourseId") int studentCourseId, @Param("status") ApplicationStatusEnum Enumstatus);

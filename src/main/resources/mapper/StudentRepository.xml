@@ -15,6 +15,27 @@
         FROM students
         WHERE id = #{id}
     </select>
+    <!-- 性別での検索-->
+    <select id="searchStudentsByGender" resultType="raisetechtask.taskstudentsmanagement.finalversion.data.Student">
+        SELECT
+        id,
+        full_name,
+        furigana,
+        nickname,
+        email_address,
+        address,
+        age,
+        gender,
+        remark,
+        is_deleted
+        FROM
+        students
+        WHERE
+        gender = #{gender}
+        AND is_deleted = FALSE
+        ORDER BY
+        id
+    </select>
 
     <!--受講生の登録 -->
     <insert id="registerStudent" parameterType="raisetechtask.taskstudentsmanagement.finalversion.data.Student"

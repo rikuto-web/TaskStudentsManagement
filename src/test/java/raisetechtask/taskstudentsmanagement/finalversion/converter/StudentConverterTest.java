@@ -3,8 +3,8 @@ package raisetechtask.taskstudentsmanagement.finalversion.converter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
+import raisetechtask.taskstudentsmanagement.finalversion.data.StudentCourse;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
 
 import java.time.LocalDate;
@@ -15,14 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum.JUKOCHU;
+import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.JUKOCHU;
 
 class StudentConverterTest {
 
 	private StudentConverter converter;
 
 	@BeforeEach
-	void StudentConverterTest() {
+	void setUp() {
 		converter = new StudentConverter();
 	}
 
@@ -30,10 +30,10 @@ class StudentConverterTest {
 	@Test
 	void 受講生情報とコース情報の呼びだしが空の状態でできていること() {
 		List<Student> studentList = new ArrayList<>();
-		List<Course> courseList = new ArrayList<>();
+		List<StudentCourse> studentCourseList = new ArrayList<>();
 		List<ApplicationStatus> statusList = new ArrayList<>();
 
-		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, courseList, statusList);
+		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, studentCourseList, statusList);
 
 		assertNotNull(actualStudentDetails);
 		assertTrue(actualStudentDetails.isEmpty());
@@ -52,12 +52,12 @@ class StudentConverterTest {
 
 		List<StudentDetail> expectedStudentDetails = new ArrayList<>();
 		expectedStudentDetails.add(expectedDetail);
-		List<Course> courseList = new ArrayList<>();
+		List<StudentCourse> studentCourseList = new ArrayList<>();
 
 		List<ApplicationStatus> statusList = new ArrayList<>();
 
 		//実行
-		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, courseList, statusList);
+		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, studentCourseList, statusList);
 		//検証
 		assertEquals(expectedStudentDetails, actualStudentDetails);
 	}
@@ -69,7 +69,7 @@ class StudentConverterTest {
 		List<Student> studentList = new ArrayList<>();
 		studentList.add(student);
 		studentList.add(student1);
-		List<Course> courseList = new ArrayList<>();
+		List<StudentCourse> studentCourseList = new ArrayList<>();
 
 		StudentDetail expectedDetailForStudent = new StudentDetail();
 		expectedDetailForStudent.setStudent(student);
@@ -86,7 +86,7 @@ class StudentConverterTest {
 		List<ApplicationStatus> statusList = new ArrayList<>();
 
 		//実行
-		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, courseList, statusList);
+		List<StudentDetail> actualStudentDetails = converter.convertStudentDetails(studentList, studentCourseList, statusList);
 		//検証
 		assertEquals(expectedStudentDetails, actualStudentDetails);
 	}
@@ -94,14 +94,14 @@ class StudentConverterTest {
 	@Test
 	void 受講生のリストと受講生コース情報のリストを渡したときに紐づかない受講生コース情報は除外されること() {
 		Student student = new Student(999, "田中太郎", "タナカタロウ", "たなか", "rftgyhu@huji.com", "東京", 35, "男性", "", false);
-		Course course = new Course(999, 888, "Java", LocalDate.now(), LocalDate.now().plusYears(1));
+		StudentCourse studentCourse = new StudentCourse(999, 888, "Java", LocalDate.now(), LocalDate.now().plusYears(1));
 		ApplicationStatus status = new ApplicationStatus(7, 999, JUKOCHU);
 
 		List<Student> studentList = List.of(student);
-		List<Course> courseList = List.of(course);
+		List<StudentCourse> studentCourseList = List.of(studentCourse);
 		List<ApplicationStatus> applicationStatusList = List.of(status);
 
-		List<StudentDetail> actual = converter.convertStudentDetails(studentList, courseList, applicationStatusList);
+		List<StudentDetail> actual = converter.convertStudentDetails(studentList, studentCourseList, applicationStatusList);
 
 		assertThat(actual.getFirst().getStudent()).isEqualTo(student);
 		assertThat(actual.getFirst().getStudentCourseList()).isEmpty();

@@ -3,8 +3,8 @@ package raisetechtask.taskstudentsmanagement.finalversion.repository;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
+import raisetechtask.taskstudentsmanagement.finalversion.data.StudentCourse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,24 +21,26 @@ class CoursesRepositoryTest {
 
 	@Test
 	void コース情報の全件検索が行えること() {
-		List<Course> actual = sut.searchCourses();
+		List<StudentCourse> actual = sut.searchCourses();
 		assertThat(actual.size()).isEqualTo(5);
 	}
 
 	@Test
 	void 受講生IDに紐づいたコース情報の検索が行えること() {
 		Student studentToRegister = createDefaultStudent();
-		studentToRegister.setId(999);
+		studentToRegister.setId(1);
 		studentSut.registerStudent(studentToRegister);
 
-		Course courseToRegister = createDefaultCourse();
-		sut.registerStudentCourses(courseToRegister);
+		StudentCourse studentCourseToRegister = createDefaultCourse();
+		sut.registerStudentCourses(studentCourseToRegister);
 
 
-		List<Course> actualCourses = sut.searchStudentCourse(courseToRegister.getStudentId());
+		List<StudentCourse> actualCours = sut.searchStudentCourses(studentCourseToRegister.getStudentId());
 
-		Course foundCourse = actualCourses.getFirst();
-		assertThat(actualCourses).isNotNull();
+		StudentCourse foundStudentCourse = actualCours.getFirst();
+		assertThat(actualCours)
+				.isNotNull()
+				.hasSize(1);
 	}
 
 
@@ -48,11 +50,11 @@ class CoursesRepositoryTest {
 		studentForCourse.setId(999);
 		studentSut.registerStudent(studentForCourse);
 
-		Course courseToRegister = createDefaultCourse();
-		sut.registerStudentCourses(courseToRegister);
+		StudentCourse studentCourseToRegister = createDefaultCourse();
+		sut.registerStudentCourses(studentCourseToRegister);
 
-		List<Course> allCourses = sut.searchCourses();
-		assertThat(allCourses.size()).isEqualTo(6);
+		List<StudentCourse> allCours = sut.searchCourses();
+		assertThat(allCours.size()).isEqualTo(6);
 	}
 
 	@Test
@@ -61,25 +63,27 @@ class CoursesRepositoryTest {
 		studentForUpdate.setId(999);
 		studentSut.registerStudent(studentForUpdate);
 
-		Course initialCourse = createDefaultCourse();
-		sut.registerStudentCourses(initialCourse);
+		StudentCourse initialStudentCourse = createDefaultCourse();
+		sut.registerStudentCourses(initialStudentCourse);
 
-		List<Course> coursesFromDb = sut.searchStudentCourse(initialCourse.getStudentId());
+		List<StudentCourse> coursesFromDb = sut.searchStudentCourses(initialStudentCourse.getStudentId());
 		assertThat(coursesFromDb).hasSize(1);
-		Course courseToUpdate = coursesFromDb.getFirst();
+		StudentCourse studentCourseToUpdate = coursesFromDb.getFirst();
 
 		String updatedCourseName = "更新後のテストコース名";
-		courseToUpdate.setCourseName(updatedCourseName);
+		studentCourseToUpdate.setCourseName(updatedCourseName);
 
-		sut.updateStudentCourses(courseToUpdate);
+		sut.updateStudentCourses(studentCourseToUpdate);
 
-		List<Course> updatedCoursesFromDb = sut.searchStudentCourse(initialCourse.getStudentId());
+		List<StudentCourse> updatedCoursesFromDb = sut.searchStudentCourses(initialStudentCourse.getStudentId());
 		assertThat(updatedCoursesFromDb).hasSize(1);
+		assertThat(updatedCoursesFromDb.getFirst().getCourseName()).isEqualTo(updatedCourseName);
+
 	}
 
 	//ヘルパーメソッド
-	private Course createDefaultCourse() {
-		return Course.builder()
+	private StudentCourse createDefaultCourse() {
+		return StudentCourse.builder()
 				.id(999)
 				.studentId(999)
 				.courseName("テストコース")

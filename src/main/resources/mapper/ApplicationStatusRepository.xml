@@ -20,12 +20,14 @@
     </select>
 
     <!--申し込み状況の登録 -->
-    <insert id="registerStatus" parameterType="raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus"
-            useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerStatus" parameterType="map">
         INSERT INTO application_status (
-        student_course_id, status)
-        VALUES(
-        #{studentCourseId}, #{status})
+        student_course_id,
+        status
+        ) VALUES (
+        #{studentCourseId},
+        #{status}
+        )
     </insert>
 
     <!--申し込み状況の更新 -->

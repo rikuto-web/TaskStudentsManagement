@@ -4,18 +4,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetechtask.taskstudentsmanagement.finalversion.converter.StudentConverter;
 import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
+import raisetechtask.taskstudentsmanagement.finalversion.data.StudentCourse;
+import raisetechtask.taskstudentsmanagement.finalversion.domain.CourseApplicationDetail;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
+import raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum;
+import raisetechtask.taskstudentsmanagement.finalversion.exception.StudentNotFoundException;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.ApplicationStatusRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.CoursesRepository;
 import raisetechtask.taskstudentsmanagement.finalversion.repository.StudentsRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-import static raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatusEnum.KARI_MOSIKOMI;
+import static raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum.KARI_MOSIKOMI;
 
 
 /**
@@ -43,12 +46,12 @@ public class StudentService {
 	 * コース情報の詳細内容と、申込助教を仮申込で登録を行う。
 	 *
 	 * @param studentCourse 受講生コース情報
-	 * @param student       　受講生
+	 * @param studentId     　受講生
 	 * @param status        　申込状況
 	 */
-	void initStudentsCourse(Course studentCourse, Student student, ApplicationStatus status) {
+	private void initStudentsCourse(StudentCourse studentCourse, int studentId, ApplicationStatus status) {
 		LocalDate now = LocalDate.now();
-		studentCourse.setStudentId(student.getId());
+		studentCourse.setStudentId(studentId);
 		studentCourse.setCourseStartDay(now);
 		studentCourse.setCourseCompletionDay(now.plusYears(1));
 
@@ -65,9 +68,9 @@ public class StudentService {
 	@Transactional
 	public List<StudentDetail> searchStudentList() {
 		List<Student> studentList = studentRepository.searchStudentsList();
-		List<Course> courseList = coursesRepository.searchCourses();
-		List<ApplicationStatus> statusList = applicationStatusRepository.searchStudentCourseStatusList();
-		return converter.convertStudentDetails(studentList, courseList, statusList);//ToDo converterクラス修正
+		List<StudentCourse> studentCourseList = coursesRepository.searchCourses(); // 全コース取得
+		List<ApplicationStatus> statusList = applicationStatusRepository.searchStudentCourseStatusList(); // 全ステータス取得
+		return converter.convertStudentDetails(studentList, studentCourseList, statusList);
 	}
 
 	/**
@@ -79,15 +82,23 @@ public class StudentService {
 	 */
 	@Transactional
 	public StudentDetail searchStudent(int id) {
-		Student student = studentRepository.searchStudent(id);//受講生のID検索
-		List<Course> courseList = coursesRepository.searchStudentCourse(student.getId());//受講生IDに紐づいたコース検索
-		if(courseList.isEmpty()) {
-			return null; // 想定していないがコースがなければnullを返す
-		}
-		int courseId = courseList.getFirst().getId();//Listにある最初のIDを取得
+		Student student = studentRepository.searchStudent(id);
 
-		ApplicationStatus status = applicationStatusRepository.searchStudentCourseStatus(courseId);//intで取得したコースIDを渡す
-		return new StudentDetail(student, courseList, status);
+		if(student == null) {
+			throw new StudentNotFoundException("Student with ID " + id + " not found.");
+		}
+
+		List<StudentCourse> studentCourseList = coursesRepository.searchStudentCourses(student.getId());
+
+		List<CourseApplicationDetail> courseApplicationDetails = new ArrayList<>();
+		for(StudentCourse studentCourse : studentCourseList) {
+			ApplicationStatus status = applicationStatusRepository.searchStudentCourseStatus(studentCourse.getId());
+			if(status == null) {
+				throw new IllegalStateException("Course ID " + studentCourse.getId() + " にステータスが存在しません。");
+			}
+			courseApplicationDetails.add(new CourseApplicationDetail(studentCourse, status));
+		}
+		return new StudentDetail(student, courseApplicationDetails);
 	}
 
 	/**
@@ -102,14 +113,23 @@ public class StudentService {
 	@Transactional
 	public StudentDetail registerStudent(StudentDetail studentDetail) {
 		Student student = studentDetail.getStudent();
-		studentRepository.registerStudent(student);//受講生の登録
+		studentRepository.registerStudent(student); // ここで student オブジェクトにIDが設定される
 
-		studentDetail.getStudentCourseList().forEach(studentCourse -> {  //コース情報の登録をする際に申込状況も登録
-			ApplicationStatus status = new ApplicationStatus();//ApplicationStatusをインスタンス化
-			initStudentsCourse(studentCourse, student, status);
+		// ⭐ 登録された学生のIDをローカル変数に取得する
+		//    これにより、forEachループ内のラムダ式で常に有効なIDが利用できる
+		final int registeredStudentId = student.getId();
+
+		studentDetail.getStudentCourseList().forEach(courseApplicationDetail -> {
+			StudentCourse studentCourse = courseApplicationDetail.getStudentCourse();
+			ApplicationStatus status = courseApplicationDetail.getApplicationStatus();
+
+			// initStudentsCourse の呼び出しも変更
+			initStudentsCourse(studentCourse, registeredStudentId, status); // ⭐ 変更箇所
+
 			coursesRepository.registerStudentCourses(studentCourse);
-			status.setStudentCourseId(studentCourse.getId());//コース情報を登録したときに自動採番されたIDをStatusに設定
-			applicationStatusRepository.registerStatus(status);//コースIDに紐づいた申込状況の登録
+			// studentCourse.getId() は coursesRepository.registerStudentCourses の後に利用可能になるはず
+			status.setStudentCourseId(studentCourse.getId());
+			applicationStatusRepository.registerStatus(status.getStudentCourseId(), status.getStatus().name());
 		});
 		return studentDetail;
 	}
@@ -124,13 +144,20 @@ public class StudentService {
 	@Transactional
 	public void updateStudent(StudentDetail studentDetail) {
 		studentRepository.updateStudent(studentDetail.getStudent());
-		for(Course studentCourse : studentDetail.getStudentCourseList()) {
-			coursesRepository.updateStudentCourses(studentCourse);
+		for(CourseApplicationDetail courseApplicationDetail : studentDetail.getStudentCourseList()) {
+			StudentCourse studentCourse = courseApplicationDetail.getStudentCourse();
+			ApplicationStatus appStatus = courseApplicationDetail.getApplicationStatus();
+			if(appStatus == null) {
+				throw new IllegalStateException("申込ステータスが null です。Course ID: " + courseApplicationDetail.getStudentCourse().getId());
+			}
+			ApplicationStatusEnum updateStatus = appStatus.getStatus();
 
-			ApplicationStatusEnum updateStatus = studentDetail.getStatus().getStatus();//studentDetailにあるstatusにあるEnum型のstatus
-			int courseId = studentCourse.getId();
-			applicationStatusRepository.searchStudentCourseStatus(courseId);
-			applicationStatusRepository.updateStatus(courseId, updateStatus); //コースIDとstatusをセットして更新
+			coursesRepository.updateStudentCourses(studentCourse);
+			applicationStatusRepository.updateStatus(studentCourse.getId(), updateStatus);
 		}
+	}
+
+	public List<Student> searchStudentsByGender(String gender) {
+		return studentRepository.searchStudentsByGender(gender);
 	}
 }

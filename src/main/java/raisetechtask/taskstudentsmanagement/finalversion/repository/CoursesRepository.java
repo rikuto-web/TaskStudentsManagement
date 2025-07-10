@@ -1,7 +1,7 @@
 package raisetechtask.taskstudentsmanagement.finalversion.repository;
 
 import org.apache.ibatis.annotations.Mapper;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
+import raisetechtask.taskstudentsmanagement.finalversion.data.StudentCourse;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface CoursesRepository {
 	 *
 	 * @return コース情報（全件）
 	 */
-	List<Course> searchCourses();
+	List<StudentCourse> searchCourses();
 
 	/**
 	 * 受講生IDに紐づくコース情報を検索します。
@@ -24,19 +24,19 @@ public interface CoursesRepository {
 	 * @param studentId 受講生ID
 	 * @return 受講生IDに紐づく受講生コース情報
 	 */
-	List<Course> searchStudentCourse(int studentId);
+	List<StudentCourse> searchStudentCourses(int studentId);
 
 	/**
 	 * 受講生IDと紐づいたコース情報の登録を行います。
 	 *
-	 * @param studentsCourse 受講生のコース情報
+	 * @param studentsStudentCourse 受講生のコース情報
 	 */
-	void registerStudentCourses(Course studentsCourse);
+	void registerStudentCourses(StudentCourse studentsStudentCourse);
 
 	/**
 	 * コース名の更新を行います。
 	 *
-	 * @param studentCourseList コース情報
+	 * @param studentStudentCourseList コース情報
 	 */
-	void updateStudentCourses(Course studentCourseList);
+	void updateStudentCourses(StudentCourse studentStudentCourseList);
 }

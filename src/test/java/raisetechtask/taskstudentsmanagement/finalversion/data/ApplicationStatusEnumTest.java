@@ -3,14 +3,13 @@ package raisetechtask.taskstudentsmanagement.finalversion.data;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import raisetechtask.taskstudentsmanagement.finalversion.enums.ApplicationStatusEnum;
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@MybatisTest
 class ApplicationStatusEnumTest {
 
 	@ParameterizedTest

@@ -3,6 +3,7 @@ package raisetechtask.taskstudentsmanagement.finalversion.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 import raisetechtask.taskstudentsmanagement.finalversion.domain.StudentDetail;
-import raisetechtask.taskstudentsmanagement.finalversion.exception.TestException;
 import raisetechtask.taskstudentsmanagement.finalversion.service.StudentService;
 
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
 @Validated
 public class StudentController {
 
-	private StudentService service;
+	private final StudentService service;
 
 	@Autowired
 	public StudentController(StudentService service) {
@@ -84,10 +85,13 @@ public class StudentController {
 		return ResponseEntity.ok("更新処理が成功しました。");
 	}
 
-
-	//例外メソッドとしてとりあえず保存
-	@GetMapping("/exStudentList")
-	public List<StudentDetail> ex() throws TestException {
-		throw new TestException("エラーが発生しました");
+	/**
+	 * 性別で受講生を検索するエンドポイント。
+	 */
+	@GetMapping("/students/gender/{gender}")
+	public List<Student> getStudentsByGender(
+			@PathVariable
+			@Pattern(regexp = "男性|女性|その他", message = "genderは「男性」「女性」「その他」のいずれかで指定してください") String gender) {
+		return service.searchStudentsByGender(gender);
 	}
 }

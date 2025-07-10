@@ -8,8 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import raisetechtask.taskstudentsmanagement.finalversion.data.ApplicationStatus;
-import raisetechtask.taskstudentsmanagement.finalversion.data.Course;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
 import java.util.List;
@@ -27,9 +25,7 @@ public class StudentDetail {
 	private Student student;
 
 	@Valid
-	private List<Course> studentCourseList;
+	private List<CourseApplicationDetail> studentCourseList;
 
-	@Valid
-	private ApplicationStatus status;
 }
 

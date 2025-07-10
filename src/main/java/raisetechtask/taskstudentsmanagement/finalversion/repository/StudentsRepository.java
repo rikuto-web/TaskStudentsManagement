@@ -1,6 +1,7 @@
 package raisetechtask.taskstudentsmanagement.finalversion.repository;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import raisetechtask.taskstudentsmanagement.finalversion.data.Student;
 
 import java.util.List;
@@ -39,4 +40,12 @@ public interface StudentsRepository {
 	 * @param student 個人情報
 	 */
 	void updateStudent(Student student);
+
+	/**
+	 * 性別を指定して受講生を検索します。
+	 *
+	 * @param gender 検索したい性別（例: "男性", "女性"）
+	 * @return 該当する受講生の一覧
+	 */
+	List<Student> searchStudentsByGender(@Param("gender") String gender);
 }
