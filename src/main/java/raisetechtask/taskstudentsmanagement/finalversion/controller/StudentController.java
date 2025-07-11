@@ -1,6 +1,10 @@
 package raisetechtask.taskstudentsmanagement.finalversion.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Pattern;
@@ -25,6 +29,7 @@ import java.util.List;
  */
 @RestController
 @Validated
+@Tag(name = "受講生管理API", description = "受講生情報の検索、登録、更新を管理するAPI")
 public class StudentController {
 
 	private final StudentService service;
@@ -41,6 +46,9 @@ public class StudentController {
 	 * @return 受講生一覧（全件）
 	 */
 	@Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
+	@ApiResponse(responseCode = "200", description = "成功。受講生の一覧を返します。",
+			content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = StudentDetail.class)))
 	@GetMapping("/studentList")
 	public List<StudentDetail> getStudentList() {
 		return service.searchStudentList();
@@ -53,6 +61,10 @@ public class StudentController {
 	 * @param id 　受講生ID
 	 * @return 受講生詳細
 	 */
+	@Operation(summary = "受講生登録", description = "受講生を登録します。")
+	@ApiResponse(responseCode = "200", description = "登録成功。登録された受講生詳細情報を返します。",
+			content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = StudentDetail.class)))
 	@GetMapping("/student/{id}")
 	public StudentDetail getStudent(@PathVariable @PositiveOrZero @Max(999) int id) {
 		return service.searchStudent(id);
@@ -65,6 +77,9 @@ public class StudentController {
 	 * @return 実行結果
 	 */
 	@Operation(summary = "受講生登録", description = "受講生を登録します。")
+	@ApiResponse(responseCode = "200", description = "登録成功。登録された受講生詳細情報を返します。",
+			content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = StudentDetail.class)))
 	@PostMapping("/registerStudent")
 	public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
 		StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
@@ -78,6 +93,9 @@ public class StudentController {
 	 * @param studentDetail 受講生詳細
 	 * @return 実行結果
 	 */
+	@Operation(summary = "受講生情報更新", description = "既存の受講生情報を更新します。キャンセルフラグの更新（論理削除）も含まれます。")
+	@ApiResponse(responseCode = "200", description = "更新処理が成功しました。",
+			content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "更新処理が成功しました。")))
 	@PutMapping("/updateStudent")
 	public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail) {
 
@@ -89,6 +107,10 @@ public class StudentController {
 	 * 性別で受講生を検索を行います。
 	 * 男性・女性・その他のみ受付を行います。
 	 */
+	@Operation(summary = "性別による受講生検索", description = "指定された性別の受講生の一覧を取得します。")
+	@ApiResponse(responseCode = "200", description = "成功。指定された性別の受講生リストを返します。",
+			content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = Student.class, type = "array")))
 	@GetMapping("/students/gender/{gender}")
 	public List<Student> getStudentsByGender(
 			@PathVariable

@@ -1,0 +1,8 @@
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  info:
+    title: 受講生管理API
+    version: 1.0.0
