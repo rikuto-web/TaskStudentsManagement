@@ -86,7 +86,8 @@ public class StudentController {
 	}
 
 	/**
-	 * 性別で受講生を検索するエンドポイント。
+	 * 性別で受講生を検索を行います。
+	 * 男性・女性・その他のみ受付を行います。
 	 */
 	@GetMapping("/students/gender/{gender}")
 	public List<Student> getStudentsByGender(
