@@ -30,12 +30,14 @@ public class StudentCourse {
 	 * 受講生コース情報の一意の識別子です。
 	 * DBにて自動採番で設定されます。
 	 */
+	@Schema(description = "受講生コースID（自動採番）", example = "101")
 	private int id;
 
 	/**
 	 * 受講生コース情報に紐づいた受講生の一意なIDです。必須項目。
 	 */
 	@NotNull(message = "受講生IDは必須項目です。")
+	@Schema(description = "受講生のID", example = "1")
 	private int studentId;
 
 	/**
@@ -43,6 +45,7 @@ public class StudentCourse {
 	 */
 	@NotBlank(message = "コース名称は必須項目です。")
 	@Size(max = 50, message = "コース名称は50文字以内で入力してください。")
+	@Schema(description = "コース名称（最大50文字）", example = "Java基礎")
 	private String courseName;
 
 	/**
@@ -50,6 +53,7 @@ public class StudentCourse {
 	 */
 	@NotNull(message = "コース開始日は必須項目です。")
 	@FutureOrPresent(message = "コース開始日は現在または未来の日付である必要があります。")
+	@Schema(description = "コース開始日（今日以降）", example = "2024-07-15", format = "date")
 	private LocalDate courseStartDay;
 
 	/**
@@ -57,5 +61,6 @@ public class StudentCourse {
 	 */
 	@NotNull(message = "コース修了予定日は必須項目です。")
 	@FutureOrPresent(message = "コース修了予定日は現在または未来の日付である必要があります。")
+	@Schema(description = "コース修了予定日（今日以降）", example = "2024-09-30", format = "date")
 	private LocalDate courseCompletionDay;
 }
